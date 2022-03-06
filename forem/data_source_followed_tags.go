@@ -10,6 +10,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
+const (
+	FormatIntBase = 10
+)
+
 func dataSourceFollowedTags() *schema.Resource {
 	return &schema.Resource{
 		Description: "Followed tags data source",
@@ -48,28 +52,19 @@ func dataSourceFollowedTagsRead(d *schema.ResourceData, meta interface{}) error 
 		return fmt.Errorf("error getting followed tags: %w", err)
 	}
 
-	d.Set("tags", flattenTagsData(&ftResp))
-	d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+	ftags := make([]interface{}, len(ftResp))
+	for i, v := range ftResp {
+		ft := make(map[string]interface{})
 
-	return nil
-}
+		ft["id"] = v.ID
+		ft["name"] = v.Name
+		ft["points"] = v.Points
 
-func flattenTagsData(followedTags *[]dev.Tag) []interface{} {
-	if followedTags != nil {
-		ftags := make([]interface{}, len(*followedTags))
-
-		for i, v := range *followedTags {
-			ft := make(map[string]interface{})
-
-			ft["id"] = v.ID
-			ft["name"] = v.Name
-			ft["points"] = v.Points
-
-			ftags[i] = ft
-		}
-
-		return ftags
+		ftags[i] = ft
 	}
 
-	return make([]interface{}, 0)
+	d.Set("tags", ftags)
+	d.SetId(strconv.FormatInt(time.Now().Unix(), FormatIntBase))
+
+	return nil
 }

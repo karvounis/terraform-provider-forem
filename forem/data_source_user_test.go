@@ -10,7 +10,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 )
 
-func TestAccUserDataSource_username(t *testing.T) {
+func TestAccUserDataSource(t *testing.T) {
 	username := "karvounis"
 	dataSourceName := "data.forem_user.test"
 	randID := strconv.Itoa(acctest.RandIntRange(0, 500000))
