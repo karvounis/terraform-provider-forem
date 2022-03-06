@@ -8,7 +8,11 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-// Provider -
+const (
+	DEV_TO_BASE_URL = "https://dev.to/api"
+)
+
+// Provider initialises the Provider
 func Provider() *schema.Provider {
 	return &schema.Provider{
 		Schema: map[string]*schema.Schema{
@@ -17,12 +21,14 @@ func Provider() *schema.Provider {
 				Optional:    true,
 				DefaultFunc: schema.EnvDefaultFunc("FOREM_API_KEY", nil),
 			},
+			"host": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				DefaultFunc: schema.EnvDefaultFunc("FOREM_HOST", DEV_TO_BASE_URL),
+			},
 		},
 		ResourcesMap: map[string]*schema.Resource{},
 		DataSourcesMap: map[string]*schema.Resource{
-			// "forem_articles": dataSourceArticles(),
-			// "forem_article":  dataSourceArticle(),
-
 			"forem_profile_image": dataSourceProfileImage(),
 		},
 		ConfigureContextFunc: providerConfigure,
