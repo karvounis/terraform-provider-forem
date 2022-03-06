@@ -2,8 +2,8 @@ package forem
 
 import (
 	"fmt"
-	"log"
 	"strconv"
+	"terraform-provider-forem/internal"
 
 	dev "github.com/Mayowa-Ojo/dev-client-go"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -71,22 +71,21 @@ func dataSourceUserRead(d *schema.ResourceData, meta interface{}) error {
 	var err error
 	if v, ok := d.GetOk("id"); ok {
 		id := v.(string)
-		log.Printf("[DEBUG] Getting user with id: %s", id)
+		internal.LogDebug(fmt.Sprintf("Getting user with id: %s", id))
 		userResp, err = client.GetUserByID(id)
 		if err != nil {
 			return fmt.Errorf("error getting user: %w", err)
 		}
-		log.Printf("[DEBUG] Found user with id: %s", id)
+		internal.LogDebug(fmt.Sprintf("Found user with id: %s", id))
 		d.Set("type_of", userResp.TypeOf)
-
 	} else {
 		username := d.Get("username").(string)
-		log.Printf("[DEBUG] Getting user with username: %s", username)
+		internal.LogDebug(fmt.Sprintf("Getting user with username: %s", username))
 		userResp, err = client.GetUserByUsername(dev.UserQueryParams{URL: username})
 		if err != nil {
 			return fmt.Errorf("error getting user: %w", err)
 		}
-		log.Printf("[DEBUG] Found user with username: %s", username)
+		internal.LogDebug(fmt.Sprintf("Found user with username: %s", username))
 	}
 
 	d.SetId(strconv.Itoa(int(userResp.ID)))

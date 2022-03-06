@@ -2,8 +2,8 @@ package forem
 
 import (
 	"fmt"
-	"log"
 	"strconv"
+	"terraform-provider-forem/internal"
 	"time"
 
 	dev "github.com/Mayowa-Ojo/dev-client-go"
@@ -46,7 +46,7 @@ func dataSourceFollowedTags() *schema.Resource {
 func dataSourceFollowedTagsRead(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*dev.Client)
 
-	log.Print("[DEBUG] Getting followed tags")
+	internal.LogDebug("Getting followed tags")
 	ftResp, err := client.GetFollowedTags()
 	if err != nil {
 		return fmt.Errorf("error getting followed tags: %w", err)

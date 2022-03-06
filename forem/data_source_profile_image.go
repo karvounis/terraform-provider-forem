@@ -2,7 +2,7 @@ package forem
 
 import (
 	"fmt"
-	"log"
+	"terraform-provider-forem/internal"
 
 	dev "github.com/Mayowa-Ojo/dev-client-go"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -45,13 +45,12 @@ func dataSourceProfileImageRead(d *schema.ResourceData, meta interface{}) error 
 	client := meta.(*dev.Client)
 
 	username := d.Get("username").(string)
-	log.Printf("[DEBUG] Getting profile image for username: %s", username)
+	internal.LogDebug(fmt.Sprintf("Getting profile image for username: %s", username))
 	profImageResp, err := client.GetProfileImage(username)
 	if err != nil {
 		return fmt.Errorf("error getting profile image: %w", err)
 	}
-
-	log.Printf("[DEBUG] Found profile image for username: %s", username)
+	internal.LogDebug(fmt.Sprintf("Found profile image for username: %s", username))
 
 	d.Set("type_of", profImageResp.TypeOf)
 	d.Set("image_of", profImageResp.ImageOf)
