@@ -30,6 +30,7 @@ func Provider() *schema.Provider {
 		ResourcesMap: map[string]*schema.Resource{},
 		DataSourcesMap: map[string]*schema.Resource{
 			"forem_profile_image": dataSourceProfileImage(),
+			"forem_user":          dataSourceUser(),
 		},
 		ConfigureContextFunc: providerConfigure,
 	}
