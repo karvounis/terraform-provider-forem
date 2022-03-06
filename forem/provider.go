@@ -31,6 +31,7 @@ func Provider() *schema.Provider {
 		DataSourcesMap: map[string]*schema.Resource{
 			"forem_profile_image": dataSourceProfileImage(),
 			"forem_user":          dataSourceUser(),
+			"forem_followed_tags": dataSourceFollowedTags(),
 		},
 		ConfigureContextFunc: providerConfigure,
 	}
