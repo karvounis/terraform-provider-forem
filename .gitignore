@@ -38,3 +38,4 @@ terraform.rc
 /.idea
 vendor/
 .vscode/
+examples/
