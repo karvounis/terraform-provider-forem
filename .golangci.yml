@@ -1,0 +1,34 @@
+issues:
+  exclude-rules:
+    # Exclude issues bypassing staticcheck.conf
+    - linters:
+        - staticcheck
+      text: "SA1019:"
+
+    - linters:
+        - unparam
+      text: "always receives"
+
+  max-per-linter: 0
+  max-same-issues: 0
+
+linters:
+  disable-all: true
+  enable:
+    - deadcode
+    - errcheck
+    - gofmt
+    - gomnd
+    - gosimple
+    - ineffassign
+    - makezero
+    - misspell
+    - nakedret
+    - nilerr
+    - nolintlint
+    - staticcheck
+    - structcheck
+    - unconvert
+    - unparam
+    - varcheck
+    - vet

@@ -3,8 +3,10 @@ package forem_test
 import (
 	"fmt"
 	"os"
+	"regexp"
 	"testing"
 
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/acctest"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
@@ -22,11 +24,14 @@ func TestAccProfileImageDataSource(t *testing.T) {
 					resource.TestCheckResourceAttr(dataSourceName, "username", username),
 					resource.TestCheckResourceAttr(dataSourceName, "id", username),
 					resource.TestCheckResourceAttr(dataSourceName, "type_of", "profile_image"),
-					resource.TestCheckResourceAttrSet(dataSourceName, "image_of"),
+					testCheckResourceAttrExistsInArray(dataSourceName, "image_of", []string{"user", "organization"}),
 					resource.TestCheckResourceAttrSet(dataSourceName, "profile_image"),
 					resource.TestCheckResourceAttrSet(dataSourceName, "profile_image_90"),
-					testCheckResourceAttrExistsInArray(dataSourceName, "image_of", []string{"user", "organization"}),
 				),
+			},
+			{
+				Config:      testAccProfileImageDataSourceConfig_random(15),
+				ExpectError: regexp.MustCompile(`error getting profile image: not found: 404`),
 			},
 		},
 	})
@@ -72,6 +77,14 @@ data "forem_profile_image" "test" {
 	username = "%s"
 }
 `, username)
+}
+
+func testAccProfileImageDataSourceConfig_random(strlen int) string {
+	return fmt.Sprintf(`
+data "forem_profile_image" "test" {
+	username = "%s"
+}
+`, acctest.RandString(strlen))
 }
 
 func testAccPreCheck(t *testing.T) {
