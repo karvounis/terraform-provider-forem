@@ -32,6 +32,7 @@ func Provider() *schema.Provider {
 			"forem_profile_image": dataSourceProfileImage(),
 			"forem_user":          dataSourceUser(),
 			"forem_followed_tags": dataSourceFollowedTags(),
+			"forem_listing":       dataSourceListing(),
 		},
 		ConfigureContextFunc: providerConfigure,
 	}
