@@ -59,6 +59,20 @@ func dataSourceListing() *schema.Resource {
 				Optional: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
+			"user": {
+				Type:     schema.TypeMap,
+				Computed: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
+			"organization": {
+				Type:     schema.TypeMap,
+				Computed: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
 		},
 	}
 }
@@ -84,6 +98,27 @@ func dataSourceListingRead(d *schema.ResourceData, meta interface{}) error {
 	d.Set("published", listingResp.Published)
 	d.Set("tag_list", listingResp.TagList)
 	d.Set("tags", listingResp.Tags)
+
+	if listingResp.User != nil {
+		d.Set("user", map[string]interface{}{
+			"name":             listingResp.User.Name,
+			"username":         listingResp.User.Username,
+			"twitter_username": listingResp.User.TwitterUsername,
+			"github_username":  listingResp.User.GithubUsername,
+			"website_url":      listingResp.User.WebsiteURL,
+			"profile_image":    listingResp.User.ProfileImage,
+		})
+	}
+
+	if listingResp.Organization != nil {
+		d.Set("organization", map[string]interface{}{
+			"name":             listingResp.Organization.Name,
+			"username":         listingResp.Organization.Username,
+			"slug":             listingResp.Organization.Slug,
+			"profile_image":    listingResp.Organization.ProfileImage,
+			"profile_image_90": listingResp.Organization.ProfileImage90,
+		})
+	}
 
 	return nil
 }
