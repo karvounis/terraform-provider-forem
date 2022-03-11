@@ -11,8 +11,7 @@ import (
 
 func dataSourceListing() *schema.Resource {
 	return &schema.Resource{
-		Description: "Listing data source",
-		Read:        dataSourceListingRead,
+		Read: dataSourceListingRead,
 		Schema: map[string]*schema.Schema{
 			"type_of": {
 				Type:         schema.TypeString,

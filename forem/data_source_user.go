@@ -11,8 +11,7 @@ import (
 
 func dataSourceUser() *schema.Resource {
 	return &schema.Resource{
-		Description: "User data source",
-		Read:        dataSourceUserRead,
+		Read: dataSourceUserRead,
 		Schema: map[string]*schema.Schema{
 			"type_of": {
 				Type:     schema.TypeString,

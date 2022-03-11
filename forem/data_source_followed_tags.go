@@ -16,8 +16,7 @@ const (
 
 func dataSourceFollowedTags() *schema.Resource {
 	return &schema.Resource{
-		Description: "Followed tags data source",
-		Read:        dataSourceFollowedTagsRead,
+		Read: dataSourceFollowedTagsRead,
 		Schema: map[string]*schema.Schema{
 			"tags": {
 				Type:     schema.TypeList,

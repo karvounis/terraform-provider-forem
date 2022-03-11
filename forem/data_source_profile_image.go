@@ -10,8 +10,7 @@ import (
 
 func dataSourceProfileImage() *schema.Resource {
 	return &schema.Resource{
-		Description: "Profile image data source",
-		Read:        dataSourceProfileImageRead,
+		Read: dataSourceProfileImageRead,
 		Schema: map[string]*schema.Schema{
 			"id": {
 				Type:     schema.TypeString,
