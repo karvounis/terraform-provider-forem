@@ -123,8 +123,12 @@ func dataSourceArticle() *schema.Resource {
 				Computed:     true,
 				ValidateFunc: validation.IsRFC3339Time,
 			},
-			"reading_time_minutes": {
-				Type:     schema.TypeInt,
+			"body_html": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
+			"body_markdown": {
+				Type:     schema.TypeString,
 				Computed: true,
 			},
 			"user": {
@@ -133,6 +137,10 @@ func dataSourceArticle() *schema.Resource {
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
+			},
+			"reading_time_minutes": {
+				Type:     schema.TypeInt,
+				Computed: true,
 			},
 			"organization": {
 				Type:     schema.TypeMap,
@@ -163,9 +171,9 @@ func dataSourceArticleRead(d *schema.ResourceData, meta interface{}) error {
 	}
 	internal.LogDebug(fmt.Sprintf("Found article: %s", id))
 
+	d.Set("type_of", articlesResp.Article.TypeOf)
 	d.SetId(id)
 	d.Set("title", articlesResp.Article.Title)
-	d.Set("type_of", articlesResp.Article.TypeOf)
 	d.Set("description", articlesResp.Article.Description)
 	d.Set("cover_image", articlesResp.Article.CoverImage)
 	d.Set("readable_publish_date", articlesResp.Article.ReadablePublishDate)
@@ -179,13 +187,15 @@ func dataSourceArticleRead(d *schema.ResourceData, meta interface{}) error {
 	d.Set("comments_count", articlesResp.Article.CommentsCount)
 	d.Set("positive_reactions_count", articlesResp.Article.PositiveReactionsCount)
 	d.Set("public_reactions_count", articlesResp.Article.PublicReactionsCount)
-	d.Set("reading_time_minutes", articlesResp.Article.ReadingTimeMinutes)
 	d.Set("created_at", articlesResp.Article.CreatedAt)
 	d.Set("edited_at", articlesResp.Article.EditedAt)
 	d.Set("crossposted_at", articlesResp.Article.CrosspostedAt)
 	d.Set("published_at", articlesResp.Article.PublishedAt)
 	d.Set("last_comment_at", articlesResp.Article.LastCommentAt)
 	d.Set("published_timestamp", articlesResp.Article.PublishedTimestamp)
+	d.Set("body_html", articlesResp.Article.BodyHTML)
+	d.Set("body_markdown", articlesResp.Article.BodyMarkdown)
+	d.Set("reading_time_minutes", articlesResp.Article.ReadingTimeMinutes)
 
 	if articlesResp.User != nil {
 		d.Set("user", map[string]interface{}{
