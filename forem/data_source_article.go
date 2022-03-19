@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"terraform-provider-forem/internal"
 
-	dev "github.com/Mayowa-Ojo/dev-client-go"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
+	dev "github.com/karvounis/dev-client-go"
 )
 
 func dataSourceArticle() *schema.Resource {

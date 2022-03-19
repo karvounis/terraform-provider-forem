@@ -3,9 +3,9 @@ package forem
 import (
 	"context"
 
-	dev "github.com/Mayowa-Ojo/dev-client-go"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	dev "github.com/karvounis/dev-client-go"
 )
 
 const (
@@ -41,9 +41,10 @@ func Provider() *schema.Provider {
 
 func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
 	apiKey := d.Get("api_key").(string)
+	host := d.Get("host").(string)
 
 	var diags diag.Diagnostics
-	c, err := dev.NewClient(apiKey)
+	c, err := dev.NewClient(dev.Options{Token: apiKey, Host: host})
 	if err != nil {
 		diags = append(diags, diag.Diagnostic{
 			Severity: diag.Error,
