@@ -3,8 +3,8 @@ module terraform-provider-forem
 go 1.17
 
 require (
-	github.com/Mayowa-Ojo/dev-client-go v1.0.0
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.10.1
+	github.com/karvounis/dev-client-go v1.1.0
 )
 
 require (

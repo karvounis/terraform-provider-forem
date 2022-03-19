@@ -15,9 +15,10 @@ repos:
     hooks:
       - id: yamllint
   - repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: v0.31.1
+    rev: 2a1a122656549317f4e92dc8ccc7e27e8b6d259b
     hooks:
-      - id: markdownlint
+      - id: markdownlint-docker
+      - id: markdownlint-fix-docker
   - repo: https://github.com/dnephin/pre-commit-golang
     rev: v0.5.0
     hooks:
