@@ -179,8 +179,6 @@ func resourceArticleDelete(d *schema.ResourceData, meta interface{}) error {
 }
 
 func resourceArticleCreate(d *schema.ResourceData, meta interface{}) error {
-	internal.LogDebug("resourceArticleCreate start")
-
 	client := meta.(*dev.Client)
 
 	title := d.Get("title").(string)
@@ -226,18 +224,13 @@ func resourceArticleCreate(d *schema.ResourceData, meta interface{}) error {
 
 	d.SetId(strconv.Itoa(int(resp.ID)))
 
-	internal.LogDebug("resourceArticleCreate end")
-
 	return resourceArticleRead(d, meta)
 }
 
 func resourceArticleUpdate(d *schema.ResourceData, meta interface{}) error {
-	internal.LogDebug("resourceArticleUpdate start")
-
 	client := meta.(*dev.Client)
 
 	if d.HasChanges("title", "body_markdown", "published", "series", "main_image", "canonical_url", "description", "tags", "organization_id") {
-		internal.LogDebug("resourceArticleUpdate changes")
 		var ab dev.ArticleBodySchema
 		ab.Article.Title = d.Get("title").(string)
 		ab.Article.BodyMarkdown = d.Get("body_markdown").(string)
@@ -274,14 +267,10 @@ func resourceArticleUpdate(d *schema.ResourceData, meta interface{}) error {
 			return fmt.Errorf("error creating listing: %w", err)
 		}
 	}
-	internal.LogDebug("resourceArticleUpdate end")
-
 	return resourceArticleRead(d, meta)
 }
 
 func resourceArticleRead(d *schema.ResourceData, meta interface{}) error {
-	internal.LogDebug("resourceArticleRead start")
-
 	client := meta.(*dev.Client)
 
 	id := d.Get("id").(string)
@@ -336,8 +325,6 @@ func resourceArticleRead(d *schema.ResourceData, meta interface{}) error {
 	d.Set("body_html", article.BodyHTML)
 	d.Set("tags", article.Tags)
 
-	internal.LogDebug("resourceListingRead middle")
-
 	if article.User != nil {
 		d.Set("user", map[string]interface{}{
 			"name":             article.User.Name,
@@ -372,8 +359,6 @@ func resourceArticleRead(d *schema.ResourceData, meta interface{}) error {
 	} else {
 		d.Set("flare_tag", map[string]interface{}{})
 	}
-
-	internal.LogDebug("resourceListingRead end")
 
 	return nil
 }
