@@ -27,7 +27,9 @@ func Provider() *schema.Provider {
 				DefaultFunc: schema.EnvDefaultFunc("FOREM_HOST", DEV_TO_BASE_URL),
 			},
 		},
-		ResourcesMap: map[string]*schema.Resource{},
+		ResourcesMap: map[string]*schema.Resource{
+			"forem_article": resourceArticle(),
+		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"forem_profile_image": dataSourceProfileImage(),
 			"forem_user":          dataSourceUser(),
