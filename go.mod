@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.10.1
-	github.com/karvounis/dev-client-go v1.1.0
+	github.com/karvounis/dev-client-go v1.1.1
 )
 
 require (

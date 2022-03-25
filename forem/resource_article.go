@@ -149,6 +149,10 @@ func resourceArticle() *schema.Resource {
 				Type:     schema.TypeInt,
 				Computed: true,
 			},
+			"page_views_count": {
+				Type:     schema.TypeInt,
+				Computed: true,
+			},
 			"user": {
 				Type:     schema.TypeMap,
 				Computed: true,
@@ -307,23 +311,25 @@ func resourceArticleRead(d *schema.ResourceData, meta interface{}) error {
 	d.SetId(id)
 	d.Set("title", article.Title)
 	d.Set("description", article.Description)
-	d.Set("cover_image", article.CoverImage)
-	d.Set("published", article.Published)
-	d.Set("published_at", article.PublishedAt)
-	d.Set("tag_list", article.TagList)
+	d.Set("body_markdown", article.BodyMarkdown)
 	d.Set("slug", article.Slug)
 	d.Set("path", article.Path)
 	d.Set("url", article.URL)
 	d.Set("canonical_url", article.CanonicalURL)
+	d.Set("cover_image", article.CoverImage)
+
+	d.Set("published", article.Published)
+	d.Set("published_at", article.PublishedAt)
+	d.Set("published_timestamp", article.PublishedTimestamp)
+
 	d.Set("comments_count", article.CommentsCount)
 	d.Set("positive_reactions_count", article.PositiveReactionsCount)
 	d.Set("public_reactions_count", article.PublicReactionsCount)
-	// d.Set("page_views_count", article) TODO: page_views_count
-	d.Set("published_timestamp", article.PublishedTimestamp)
+	d.Set("reading_time_minutes", article.ReadingTimeMinutes)
+	d.Set("page_views_count", article.PageViewsCount)
 
-	d.Set("body_markdown", article.BodyMarkdown)
-	d.Set("body_html", article.BodyHTML)
 	d.Set("tags", article.Tags)
+	d.Set("tag_list", article.TagList)
 
 	if article.User != nil {
 		d.Set("user", map[string]interface{}{
