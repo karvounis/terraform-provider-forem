@@ -31,7 +31,6 @@ func Provider() *schema.Provider {
 			"forem_article": resourceArticle(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
-			"forem_profile_image": dataSourceProfileImage(),
 			"forem_user":          dataSourceUser(),
 			"forem_followed_tags": dataSourceFollowedTags(),
 			"forem_listing":       dataSourceListing(),
