@@ -12,7 +12,8 @@ import (
 )
 
 const (
-	MaxArticleTags = 4
+	MaxArticleTags      = 4
+	ReadArticlesPerPage = 10
 )
 
 func resourceArticle() *schema.Resource {
@@ -44,18 +45,13 @@ func resourceArticle() *schema.Resource {
 			"body_markdown": {
 				Type:        schema.TypeString,
 				Required:    true,
-				Description: "The body of the listing in Markdown format.",
-			},
-			"tag_list": {
-				Type:        schema.TypeString,
-				Computed:    true,
-				Description: "Comma separated list of tags.",
+				Description: "The body of the article in Markdown format.",
 			},
 			"tags": {
 				Type:        schema.TypeList,
 				Optional:    true,
 				MaxItems:    MaxArticleTags,
-				Description: "Tags related to the listing.",
+				Description: "Tags related to the article.",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
 			"published": {
@@ -95,6 +91,7 @@ func resourceArticle() *schema.Resource {
 			"description": {
 				Type:     schema.TypeString,
 				Optional: true,
+				Computed: true,
 			},
 			"readable_publish_date": {
 				Type:     schema.TypeString,
@@ -265,7 +262,7 @@ func resourceArticleUpdate(d *schema.ResourceData, meta interface{}) error {
 		if v, ok := d.GetOk("organization_id"); ok {
 			ab.Article.OrganizationID = v.(int32)
 		}
-		log.Println(ab)
+
 		_, err := client.UpdateArticle(d.Id(), ab, nil)
 		if err != nil {
 			return fmt.Errorf("error creating listing: %w", err)
@@ -281,7 +278,7 @@ func resourceArticleRead(d *schema.ResourceData, meta interface{}) error {
 	internal.LogDebug(fmt.Sprintf("Getting article: %s", id))
 
 	page := int32(1)
-	perPage := int32(1)
+	perPage := int32(ReadArticlesPerPage)
 	missing := true
 	var article dev.Article
 
@@ -329,7 +326,6 @@ func resourceArticleRead(d *schema.ResourceData, meta interface{}) error {
 	d.Set("page_views_count", article.PageViewsCount)
 
 	d.Set("tags", article.Tags)
-	d.Set("tag_list", article.TagList)
 
 	if article.User != nil {
 		d.Set("user", map[string]interface{}{

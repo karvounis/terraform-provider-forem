@@ -3,6 +3,7 @@ module terraform-provider-forem
 go 1.17
 
 require (
+	github.com/brianvoe/gofakeit/v6 v6.15.0
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.10.1
 	github.com/karvounis/dev-client-go v1.1.1
 )

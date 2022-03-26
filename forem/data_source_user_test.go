@@ -12,9 +12,9 @@ import (
 )
 
 func TestAccUserDataSource(t *testing.T) {
-	username := "karvounis"
+	username := os.Getenv("TEST_DATA_FOREM_USER_USERNAME")
 	dataSourceName := "data.forem_user.test"
-	randID := strconv.Itoa(acctest.RandIntRange(0, 500000))
+	randID := strconv.Itoa(acctest.RandIntRange(0, 5))
 	resource.ParallelTest(t, resource.TestCase{
 		PreCheck:  func() { testAccPreCheck(t) },
 		Providers: testAccProviders,
@@ -68,5 +68,8 @@ data "forem_user" "test" {
 func testAccPreCheck(t *testing.T) {
 	if v := os.Getenv("FOREM_API_KEY"); v == "" {
 		t.Fatal("FOREM_API_KEY must be set for acceptance tests")
+	}
+	if v := os.Getenv("FOREM_HOST"); v == "" {
+		t.Fatal("FOREM_HOST must be set for acceptance tests")
 	}
 }
