@@ -1,11 +1,11 @@
 # Terraform provider for Forem
 
-[![terraform](https://img.shields.io/badge/terraform-%23623CE4?style=flat-square&logo=terraform&logoColor=white)](https://www.terraform.io/)
-[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 [![karvounis - terraform-provider-forem](https://img.shields.io/static/v1?label=karvounis&message=terraform-provider-forem&color=blue&logo=github)](https://github.com/karvounis/terraform-provider-forem "Go to GitHub repo")
-
+[![stars - terraform-provider-forem](https://img.shields.io/github/stars/karvounis/terraform-provider-forem?style=social)](https://github.com/karvounis/terraform-provider-forem)
+[![forks - terraform-provider-forem](https://img.shields.io/github/forks/karvounis/terraform-provider-forem?style=social)](https://github.com/karvounis/terraform-provider-forem)
 [![GitHub tag](https://img.shields.io/github/tag/karvounis/terraform-provider-forem?include_prereleases=&sort=semver&color=blue)](https://github.com/karvounis/terraform-provider-forem/releases/)
 [![License](https://img.shields.io/badge/License-MIT-blue)](#license)
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 
 This is the Terraform provider for [Forem](https://github.com/forem/forem), the platform that powers [dev.to](https://dev.to/).
 
