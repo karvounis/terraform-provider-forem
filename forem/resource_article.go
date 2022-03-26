@@ -2,7 +2,6 @@ package forem
 
 import (
 	"fmt"
-	"log"
 	"strconv"
 	"terraform-provider-forem/internal"
 
@@ -13,7 +12,7 @@ import (
 
 const (
 	MaxArticleTags      = 4
-	ReadArticlesPerPage = 10
+	ReadArticlesPerPage = 25
 )
 
 func resourceArticle() *schema.Resource {
@@ -288,11 +287,10 @@ func resourceArticleRead(d *schema.ResourceData, meta interface{}) error {
 		if err != nil {
 			return fmt.Errorf("error getting article: %w", err)
 		}
-		log.Println(articleResp)
-
 		if len(articleResp) == 0 {
 			return fmt.Errorf("no more articles")
 		}
+
 		for _, v := range articleResp {
 			if strconv.Itoa(int(v.ID)) == id {
 				internal.LogDebug(fmt.Sprintf("Found article: %s", id))
@@ -318,6 +316,10 @@ func resourceArticleRead(d *schema.ResourceData, meta interface{}) error {
 	d.Set("published", article.Published)
 	d.Set("published_at", article.PublishedAt)
 	d.Set("published_timestamp", article.PublishedTimestamp)
+	d.Set("created_at", article.CreatedAt)
+	d.Set("crossposted_at", article.CrosspostedAt)
+	d.Set("edited_at", article.EditedAt)
+	d.Set("last_comment_at", article.LastCommentAt)
 
 	d.Set("comments_count", article.CommentsCount)
 	d.Set("positive_reactions_count", article.PositiveReactionsCount)
@@ -325,7 +327,7 @@ func resourceArticleRead(d *schema.ResourceData, meta interface{}) error {
 	d.Set("reading_time_minutes", article.ReadingTimeMinutes)
 	d.Set("page_views_count", article.PageViewsCount)
 
-	d.Set("tags", article.Tags)
+	d.Set("tags", article.TagList)
 
 	if article.User != nil {
 		d.Set("user", map[string]interface{}{

@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"regexp"
-	"strconv"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/acctest"
@@ -13,8 +12,9 @@ import (
 
 func TestAccUserDataSource(t *testing.T) {
 	username := os.Getenv("TEST_DATA_FOREM_USER_USERNAME")
+	userID := os.Getenv("TEST_DATA_FOREM_USER_ID")
 	dataSourceName := "data.forem_user.test"
-	randID := strconv.Itoa(acctest.RandIntRange(0, 5))
+
 	resource.ParallelTest(t, resource.TestCase{
 		PreCheck:  func() { testAccPreCheck(t) },
 		Providers: testAccProviders,
@@ -31,10 +31,10 @@ func TestAccUserDataSource(t *testing.T) {
 				),
 			},
 			{
-				Config: testAccUserDataSourceConfig_id(randID),
+				Config: testAccUserDataSourceConfig_id(userID),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttrSet(dataSourceName, "username"),
-					resource.TestCheckResourceAttr(dataSourceName, "id", randID),
+					resource.TestCheckResourceAttr(dataSourceName, "id", userID),
 					resource.TestCheckResourceAttr(dataSourceName, "type_of", "user"),
 					resource.TestCheckResourceAttrSet(dataSourceName, "name"),
 					resource.TestCheckResourceAttrSet(dataSourceName, "joined_at"),
