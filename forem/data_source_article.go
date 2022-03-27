@@ -4,23 +4,18 @@ import (
 	"fmt"
 	"terraform-provider-forem/internal"
 
-	dev "github.com/Mayowa-Ojo/dev-client-go"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
+	dev "github.com/karvounis/dev-client-go"
 )
 
 func dataSourceArticle() *schema.Resource {
 	return &schema.Resource{
 		Read: dataSourceArticleRead,
-		// Importer: &schema.ResourceImporter{
-		// 	State: schema.ImportStatePassthrough,
-		// },
 		Schema: map[string]*schema.Schema{
 			"type_of": {
-				Type:         schema.TypeString,
-				Optional:     true,
-				Computed:     true,
-				ValidateFunc: validation.StringInSlice([]string{"article"}, false),
+				Type:     schema.TypeString,
+				Computed: true,
 			},
 			"id": {
 				Type:     schema.TypeString,
@@ -64,16 +59,12 @@ func dataSourceArticle() *schema.Resource {
 				Computed: true,
 			},
 			"url": {
-				Type:         schema.TypeString,
-				Optional:     true,
-				Computed:     true,
-				ValidateFunc: validation.IsURLWithHTTPorHTTPS,
+				Type:     schema.TypeString,
+				Computed: true,
 			},
 			"canonical_url": {
-				Type:         schema.TypeString,
-				Optional:     true,
-				Computed:     true,
-				ValidateFunc: validation.IsURLWithHTTPorHTTPS,
+				Type:     schema.TypeString,
+				Computed: true,
 			},
 			"comments_count": {
 				Type:     schema.TypeInt,
@@ -88,28 +79,20 @@ func dataSourceArticle() *schema.Resource {
 				Computed: true,
 			},
 			"created_at": {
-				Type:         schema.TypeString,
-				Optional:     true,
-				Computed:     true,
-				ValidateFunc: validation.IsRFC3339Time,
+				Type:     schema.TypeString,
+				Computed: true,
 			},
 			"edited_at": {
-				Type:         schema.TypeString,
-				Optional:     true,
-				Computed:     true,
-				ValidateFunc: validation.IsRFC3339Time,
+				Type:     schema.TypeString,
+				Computed: true,
 			},
 			"crossposted_at": {
-				Type:         schema.TypeString,
-				Optional:     true,
-				Computed:     true,
-				ValidateFunc: validation.IsRFC3339Time,
+				Type:     schema.TypeString,
+				Computed: true,
 			},
 			"published_at": {
-				Type:         schema.TypeString,
-				Optional:     true,
-				Computed:     true,
-				ValidateFunc: validation.IsRFC3339Time,
+				Type:     schema.TypeString,
+				Computed: true,
 			},
 			"last_comment_at": {
 				Type:         schema.TypeString,
@@ -118,10 +101,8 @@ func dataSourceArticle() *schema.Resource {
 				ValidateFunc: validation.IsRFC3339Time,
 			},
 			"published_timestamp": {
-				Type:         schema.TypeString,
-				Optional:     true,
-				Computed:     true,
-				ValidateFunc: validation.IsRFC3339Time,
+				Type:     schema.TypeString,
+				Computed: true,
 			},
 			"body_html": {
 				Type:     schema.TypeString,

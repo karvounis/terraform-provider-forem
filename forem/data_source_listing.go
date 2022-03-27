@@ -4,9 +4,8 @@ import (
 	"fmt"
 	"terraform-provider-forem/internal"
 
-	dev "github.com/Mayowa-Ojo/dev-client-go"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
+	dev "github.com/karvounis/dev-client-go"
 )
 
 func dataSourceListing() *schema.Resource {
@@ -14,10 +13,8 @@ func dataSourceListing() *schema.Resource {
 		Read: dataSourceListingRead,
 		Schema: map[string]*schema.Schema{
 			"type_of": {
-				Type:         schema.TypeString,
-				Optional:     true,
-				Computed:     true,
-				ValidateFunc: validation.StringInSlice([]string{"listing"}, false),
+				Type:     schema.TypeString,
+				Computed: true,
 			},
 			"id": {
 				Type:     schema.TypeString,
@@ -36,10 +33,8 @@ func dataSourceListing() *schema.Resource {
 				Computed: true,
 			},
 			"category": {
-				Type:         schema.TypeString,
-				Optional:     true,
-				Computed:     true,
-				ValidateFunc: validation.StringInSlice([]string{"cfp", "forhire", "collabs", "education", "jobs", "mentors", "products", "mentees", "forsale", "events", "misc"}, false),
+				Type:     schema.TypeString,
+				Computed: true,
 			},
 			"processed_html": {
 				Type:     schema.TypeString,
@@ -55,22 +50,18 @@ func dataSourceListing() *schema.Resource {
 			},
 			"tags": {
 				Type:     schema.TypeList,
-				Optional: true,
+				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
 			"user": {
 				Type:     schema.TypeMap,
 				Computed: true,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
-				},
+				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
 			"organization": {
 				Type:     schema.TypeMap,
 				Computed: true,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
-				},
+				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
 		},
 	}
