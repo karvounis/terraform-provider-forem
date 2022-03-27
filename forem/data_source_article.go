@@ -12,15 +12,10 @@ import (
 func dataSourceArticle() *schema.Resource {
 	return &schema.Resource{
 		Read: dataSourceArticleRead,
-		// Importer: &schema.ResourceImporter{
-		// 	State: schema.ImportStatePassthrough,
-		// },
 		Schema: map[string]*schema.Schema{
 			"type_of": {
 				Type:         schema.TypeString,
-				Optional:     true,
 				Computed:     true,
-				ValidateFunc: validation.StringInSlice([]string{"article"}, false),
 			},
 			"id": {
 				Type:     schema.TypeString,
@@ -65,15 +60,11 @@ func dataSourceArticle() *schema.Resource {
 			},
 			"url": {
 				Type:         schema.TypeString,
-				Optional:     true,
 				Computed:     true,
-				ValidateFunc: validation.IsURLWithHTTPorHTTPS,
 			},
 			"canonical_url": {
 				Type:         schema.TypeString,
-				Optional:     true,
 				Computed:     true,
-				ValidateFunc: validation.IsURLWithHTTPorHTTPS,
 			},
 			"comments_count": {
 				Type:     schema.TypeInt,
@@ -89,27 +80,19 @@ func dataSourceArticle() *schema.Resource {
 			},
 			"created_at": {
 				Type:         schema.TypeString,
-				Optional:     true,
 				Computed:     true,
-				ValidateFunc: validation.IsRFC3339Time,
 			},
 			"edited_at": {
 				Type:         schema.TypeString,
-				Optional:     true,
 				Computed:     true,
-				ValidateFunc: validation.IsRFC3339Time,
 			},
 			"crossposted_at": {
 				Type:         schema.TypeString,
-				Optional:     true,
 				Computed:     true,
-				ValidateFunc: validation.IsRFC3339Time,
 			},
 			"published_at": {
 				Type:         schema.TypeString,
-				Optional:     true,
 				Computed:     true,
-				ValidateFunc: validation.IsRFC3339Time,
 			},
 			"last_comment_at": {
 				Type:         schema.TypeString,
@@ -119,9 +102,7 @@ func dataSourceArticle() *schema.Resource {
 			},
 			"published_timestamp": {
 				Type:         schema.TypeString,
-				Optional:     true,
 				Computed:     true,
-				ValidateFunc: validation.IsRFC3339Time,
 			},
 			"body_html": {
 				Type:     schema.TypeString,

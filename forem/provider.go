@@ -2,6 +2,7 @@ package forem
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -15,6 +16,7 @@ const (
 // Provider initialises the Provider
 func Provider() *schema.Provider {
 	return &schema.Provider{
+		ConfigureContextFunc: providerConfigure,
 		Schema: map[string]*schema.Schema{
 			"api_key": {
 				Type:        schema.TypeString,
@@ -36,7 +38,6 @@ func Provider() *schema.Provider {
 			"forem_listing":       dataSourceListing(),
 			"forem_article":       dataSourceArticle(),
 		},
-		ConfigureContextFunc: providerConfigure,
 	}
 }
 
@@ -50,10 +51,9 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		diags = append(diags, diag.Diagnostic{
 			Severity: diag.Error,
 			Summary:  "Unable to create Forem client",
-			Detail:   "Unable to use apiKey",
+			Detail:   fmt.Sprintf("Unable to use apiKey for host `%s`", host),
 		})
 		return nil, diags
 	}
-
 	return c, diags
 }
