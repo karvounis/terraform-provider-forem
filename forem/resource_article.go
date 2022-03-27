@@ -230,7 +230,7 @@ func resourceArticleCreate(d *schema.ResourceData, meta interface{}) error {
 func resourceArticleUpdate(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*dev.Client)
 
-	if d.HasChanges("title", "body_markdown", "published", "series", "main_image", "canonical_url", "description", "tags", "organization_id") {
+	if d.HasChanges("title", "body_markdown", "published", "series", "main_image", "description", "tags", "organization_id") {
 		var ab dev.ArticleBodySchema
 		ab.Article.Title = d.Get("title").(string)
 		ab.Article.BodyMarkdown = d.Get("body_markdown").(string)
@@ -243,9 +243,6 @@ func resourceArticleUpdate(d *schema.ResourceData, meta interface{}) error {
 		}
 		if v, ok := d.GetOk("main_image"); ok {
 			ab.Article.MainImage = v.(string)
-		}
-		if v, ok := d.GetOk("canonical_url"); ok {
-			ab.Article.CanonicalURL = v.(string)
 		}
 		if v, ok := d.GetOk("description"); ok {
 			ab.Article.Description = v.(string)
