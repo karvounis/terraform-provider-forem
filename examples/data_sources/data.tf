@@ -7,7 +7,7 @@ data "forem_user" "example_id" {
 }
 
 data "forem_user" "example_username" {
-  id = var.user_username
+  username = var.user_username
 }
 
 data "forem_listing" "example" {
