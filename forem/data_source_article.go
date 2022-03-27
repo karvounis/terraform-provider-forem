@@ -14,8 +14,8 @@ func dataSourceArticle() *schema.Resource {
 		Read: dataSourceArticleRead,
 		Schema: map[string]*schema.Schema{
 			"type_of": {
-				Type:         schema.TypeString,
-				Computed:     true,
+				Type:     schema.TypeString,
+				Computed: true,
 			},
 			"id": {
 				Type:     schema.TypeString,
@@ -59,12 +59,12 @@ func dataSourceArticle() *schema.Resource {
 				Computed: true,
 			},
 			"url": {
-				Type:         schema.TypeString,
-				Computed:     true,
+				Type:     schema.TypeString,
+				Computed: true,
 			},
 			"canonical_url": {
-				Type:         schema.TypeString,
-				Computed:     true,
+				Type:     schema.TypeString,
+				Computed: true,
 			},
 			"comments_count": {
 				Type:     schema.TypeInt,
@@ -79,20 +79,20 @@ func dataSourceArticle() *schema.Resource {
 				Computed: true,
 			},
 			"created_at": {
-				Type:         schema.TypeString,
-				Computed:     true,
+				Type:     schema.TypeString,
+				Computed: true,
 			},
 			"edited_at": {
-				Type:         schema.TypeString,
-				Computed:     true,
+				Type:     schema.TypeString,
+				Computed: true,
 			},
 			"crossposted_at": {
-				Type:         schema.TypeString,
-				Computed:     true,
+				Type:     schema.TypeString,
+				Computed: true,
 			},
 			"published_at": {
-				Type:         schema.TypeString,
-				Computed:     true,
+				Type:     schema.TypeString,
+				Computed: true,
 			},
 			"last_comment_at": {
 				Type:         schema.TypeString,
@@ -101,8 +101,8 @@ func dataSourceArticle() *schema.Resource {
 				ValidateFunc: validation.IsRFC3339Time,
 			},
 			"published_timestamp": {
-				Type:         schema.TypeString,
-				Computed:     true,
+				Type:     schema.TypeString,
+				Computed: true,
 			},
 			"body_html": {
 				Type:     schema.TypeString,
