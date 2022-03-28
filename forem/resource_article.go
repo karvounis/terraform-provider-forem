@@ -1,10 +1,12 @@
 package forem
 
 import (
+	"context"
 	"fmt"
 	"strconv"
-	"terraform-provider-forem/internal"
 
+	"github.com/hashicorp/terraform-plugin-log/tflog"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 	dev "github.com/karvounis/dev-client-go"
@@ -17,10 +19,10 @@ const (
 
 func resourceArticle() *schema.Resource {
 	return &schema.Resource{
-		Read:   resourceArticleRead,
-		Create: resourceArticleCreate,
-		Update: resourceArticleUpdate,
-		Delete: resourceArticleDelete,
+		ReadContext:   resourceArticleRead,
+		CreateContext: resourceArticleCreate,
+		UpdateContext: resourceArticleUpdate,
+		DeleteContext: resourceArticleDelete,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -174,11 +176,11 @@ func resourceArticle() *schema.Resource {
 	}
 }
 
-func resourceArticleDelete(d *schema.ResourceData, meta interface{}) error {
+func resourceArticleDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	return nil
 }
 
-func resourceArticleCreate(d *schema.ResourceData, meta interface{}) error {
+func resourceArticleCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(*dev.Client)
 
 	title := d.Get("title").(string)
@@ -214,23 +216,23 @@ func resourceArticleCreate(d *schema.ResourceData, meta interface{}) error {
 		ab.Article.OrganizationID = v.(int32)
 	}
 
-	internal.LogDebug(fmt.Sprintf("Creating article with title `%s`", title))
+	tflog.Debug(ctx, fmt.Sprintf("Creating article with title `%s`", title))
 
 	resp, err := client.CreateArticle(ab, nil)
 	if err != nil {
-		return fmt.Errorf("error creating listing: %w", err)
+		return diag.FromErr(err)
 	}
-	internal.LogDebug(fmt.Sprintf("Created article ID: `%d`", resp.ID))
+	tflog.Debug(ctx, fmt.Sprintf("Created article ID: `%d`", resp.ID))
 
 	d.SetId(strconv.Itoa(int(resp.ID)))
 
-	return resourceArticleRead(d, meta)
+	return resourceArticleRead(ctx, d, meta)
 }
 
-func resourceArticleUpdate(d *schema.ResourceData, meta interface{}) error {
+func resourceArticleUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(*dev.Client)
 
-	if d.HasChanges("title", "body_markdown", "published", "series", "main_image", "description", "tags", "organization_id") {
+	if d.HasChanges("title", "body_markdown", "published", "series", "main_image", "description", "tags", "organization_id", "canonical_url") {
 		var ab dev.ArticleBodySchema
 		ab.Article.Title = d.Get("title").(string)
 		ab.Article.BodyMarkdown = d.Get("body_markdown").(string)
@@ -247,6 +249,9 @@ func resourceArticleUpdate(d *schema.ResourceData, meta interface{}) error {
 		if v, ok := d.GetOk("description"); ok {
 			ab.Article.Description = v.(string)
 		}
+		if v, ok := d.GetOk("canonical_url"); ok {
+			ab.Article.CanonicalURL = v.(string)
+		}
 		if v, ok := d.GetOk("tags"); ok {
 			tags := v.([]interface{})
 			tagsList := []string{}
@@ -261,17 +266,17 @@ func resourceArticleUpdate(d *schema.ResourceData, meta interface{}) error {
 
 		_, err := client.UpdateArticle(d.Id(), ab, nil)
 		if err != nil {
-			return fmt.Errorf("error creating listing: %w", err)
+			return diag.FromErr(err)
 		}
 	}
-	return resourceArticleRead(d, meta)
+	return resourceArticleRead(ctx, d, meta)
 }
 
-func resourceArticleRead(d *schema.ResourceData, meta interface{}) error {
+func resourceArticleRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(*dev.Client)
 
 	id := d.Get("id").(string)
-	internal.LogDebug(fmt.Sprintf("Getting article: %s", id))
+	tflog.Debug(ctx, fmt.Sprintf("Getting article: %s", id))
 
 	page := int32(1)
 	perPage := int32(ReadArticlesPerPage)
@@ -279,18 +284,18 @@ func resourceArticleRead(d *schema.ResourceData, meta interface{}) error {
 	var article dev.Article
 
 	for missing {
-		internal.LogDebug(fmt.Sprintf("Looking for article: %s with page: %d and perPage: %d", id, page, perPage))
+		tflog.Debug(ctx, fmt.Sprintf("Looking for article: %s with page: %d and perPage: %d", id, page, perPage))
 		articleResp, err := client.GetUserArticles(dev.ArticleQueryParams{Page: page, PerPage: perPage})
 		if err != nil {
-			return fmt.Errorf("error getting article: %w", err)
+			return diag.FromErr(err)
 		}
 		if len(articleResp) == 0 {
-			return fmt.Errorf("no more articles")
+			return diag.Errorf("no more articles")
 		}
 
 		for _, v := range articleResp {
 			if strconv.Itoa(int(v.ID)) == id {
-				internal.LogDebug(fmt.Sprintf("Found article: %s", id))
+				tflog.Debug(ctx, fmt.Sprintf("Found article: %s", id))
 				missing = false
 				article = v
 				break

@@ -13,6 +13,12 @@ const (
 	DEV_TO_BASE_URL = "https://dev.to/api"
 )
 
+func init() {
+	// Set descriptions to support markdown syntax, this will be used in document generation
+	// and the language server.
+	schema.DescriptionKind = schema.StringMarkdown
+}
+
 // Provider initialises the Provider
 func Provider() *schema.Provider {
 	return &schema.Provider{

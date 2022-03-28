@@ -1,17 +1,19 @@
 package forem
 
 import (
+	"context"
 	"fmt"
 	"strconv"
-	"terraform-provider-forem/internal"
 
+	"github.com/hashicorp/terraform-plugin-log/tflog"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	dev "github.com/karvounis/dev-client-go"
 )
 
 func dataSourceUser() *schema.Resource {
 	return &schema.Resource{
-		Read: dataSourceUserRead,
+		ReadContext: dataSourceUserRead,
 		Schema: map[string]*schema.Schema{
 			"type_of": {
 				Type:     schema.TypeString,
@@ -63,28 +65,28 @@ func dataSourceUser() *schema.Resource {
 	}
 }
 
-func dataSourceUserRead(d *schema.ResourceData, meta interface{}) error {
+func dataSourceUserRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(*dev.Client)
 
 	var userResp *dev.User
 	var err error
 	if v, ok := d.GetOk("id"); ok {
 		id := v.(string)
-		internal.LogDebug(fmt.Sprintf("Getting user with id: %s", id))
+		tflog.Debug(ctx, fmt.Sprintf("Getting user with id: %s", id))
 		userResp, err = client.GetUserByID(id)
 		if err != nil {
-			return fmt.Errorf("error getting user: %w", err)
+			return diag.FromErr(err)
 		}
-		internal.LogDebug(fmt.Sprintf("Found user with id: %s", id))
+		tflog.Debug(ctx, fmt.Sprintf("Found user with id: %s", id))
 		d.Set("type_of", userResp.TypeOf)
 	} else {
 		username := d.Get("username").(string)
-		internal.LogDebug(fmt.Sprintf("Getting user with username: %s", username))
+		tflog.Debug(ctx, fmt.Sprintf("Getting user with username: %s", username))
 		userResp, err = client.GetUserByUsername(dev.UserQueryParams{URL: username})
 		if err != nil {
-			return fmt.Errorf("error getting user: %w", err)
+			return diag.FromErr(err)
 		}
-		internal.LogDebug(fmt.Sprintf("Found user with username: %s", username))
+		tflog.Debug(ctx, fmt.Sprintf("Found user with username: %s", username))
 	}
 
 	d.SetId(strconv.Itoa(int(userResp.ID)))

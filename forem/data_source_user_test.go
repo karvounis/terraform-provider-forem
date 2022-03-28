@@ -43,7 +43,7 @@ func TestAccUserDataSource(t *testing.T) {
 			},
 			{
 				Config:      testAccUserDataSourceConfig_username(acctest.RandString(20)),
-				ExpectError: regexp.MustCompile(`error getting user: not found: 404`),
+				ExpectError: regexp.MustCompile(`Error: not found: 404`),
 			},
 		},
 	})

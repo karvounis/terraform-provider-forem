@@ -1,16 +1,18 @@
 package forem
 
 import (
+	"context"
 	"fmt"
-	"terraform-provider-forem/internal"
 
+	"github.com/hashicorp/terraform-plugin-log/tflog"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	dev "github.com/karvounis/dev-client-go"
 )
 
 func dataSourceListing() *schema.Resource {
 	return &schema.Resource{
-		Read: dataSourceListingRead,
+		ReadContext: dataSourceListingRead,
 		Schema: map[string]*schema.Schema{
 			"type_of": {
 				Type:     schema.TypeString,
@@ -67,16 +69,16 @@ func dataSourceListing() *schema.Resource {
 	}
 }
 
-func dataSourceListingRead(d *schema.ResourceData, meta interface{}) error {
+func dataSourceListingRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(*dev.Client)
 
 	id := d.Get("id").(string)
-	internal.LogDebug(fmt.Sprintf("Getting listing: %s", id))
+	tflog.Debug(ctx, fmt.Sprintf("Getting listing: %s", id))
 	listingResp, err := client.GetListingByID(id)
 	if err != nil {
-		return fmt.Errorf("error getting listing: %w", err)
+		return diag.FromErr(err)
 	}
-	internal.LogDebug(fmt.Sprintf("Found listing: %s", id))
+	tflog.Debug(ctx, fmt.Sprintf("Found listing: %s", id))
 
 	d.Set("type_of", listingResp.TypeOf)
 	d.SetId(id)

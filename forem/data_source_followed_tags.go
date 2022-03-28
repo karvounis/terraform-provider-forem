@@ -1,11 +1,12 @@
 package forem
 
 import (
-	"fmt"
+	"context"
 	"strconv"
-	"terraform-provider-forem/internal"
 	"time"
 
+	"github.com/hashicorp/terraform-plugin-log/tflog"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	dev "github.com/karvounis/dev-client-go"
 )
@@ -16,7 +17,7 @@ const (
 
 func dataSourceFollowedTags() *schema.Resource {
 	return &schema.Resource{
-		Read: dataSourceFollowedTagsRead,
+		ReadContext: dataSourceFollowedTagsRead,
 		Schema: map[string]*schema.Schema{
 			"tags": {
 				Type:     schema.TypeList,
@@ -42,13 +43,13 @@ func dataSourceFollowedTags() *schema.Resource {
 	}
 }
 
-func dataSourceFollowedTagsRead(d *schema.ResourceData, meta interface{}) error {
+func dataSourceFollowedTagsRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(*dev.Client)
 
-	internal.LogDebug("Getting followed tags")
+	tflog.Debug(ctx, "Getting followed tags")
 	ftResp, err := client.GetFollowedTags()
 	if err != nil {
-		return fmt.Errorf("error getting followed tags: %w", err)
+		return diag.FromErr(err)
 	}
 
 	ftags := make([]interface{}, len(ftResp))

@@ -1,9 +1,11 @@
 package forem
 
 import (
+	"context"
 	"fmt"
-	"terraform-provider-forem/internal"
 
+	"github.com/hashicorp/terraform-plugin-log/tflog"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 	dev "github.com/karvounis/dev-client-go"
@@ -11,7 +13,8 @@ import (
 
 func dataSourceArticle() *schema.Resource {
 	return &schema.Resource{
-		Read: dataSourceArticleRead,
+		Description: "Article Data source.",
+		ReadContext: dataSourceArticleRead,
 		Schema: map[string]*schema.Schema{
 			"type_of": {
 				Type:     schema.TypeString,
@@ -141,16 +144,17 @@ func dataSourceArticle() *schema.Resource {
 	}
 }
 
-func dataSourceArticleRead(d *schema.ResourceData, meta interface{}) error {
+func dataSourceArticleRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(*dev.Client)
 
 	id := d.Get("id").(string)
-	internal.LogDebug(fmt.Sprintf("Getting article: %s", id))
+
+	tflog.Debug(ctx, fmt.Sprintf("Getting article: %s", id))
 	articlesResp, err := client.GetPublishedArticleByID(id)
 	if err != nil {
-		return fmt.Errorf("error getting article: %w", err)
+		return diag.FromErr(err)
 	}
-	internal.LogDebug(fmt.Sprintf("Found article: %s", id))
+	tflog.Debug(ctx, fmt.Sprintf("Found article: %s", id))
 
 	d.Set("type_of", articlesResp.Article.TypeOf)
 	d.SetId(id)
