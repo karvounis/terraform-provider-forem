@@ -30,7 +30,6 @@ func TestAccArticle_basic(t *testing.T) {
 					resource.TestCheckResourceAttrSet(resourceName, "id"),
 					resource.TestCheckResourceAttr(resourceName, "title", title),
 					resource.TestCheckResourceAttr(resourceName, "body_markdown", body_markdown),
-					resource.TestCheckResourceAttr(resourceName, "type_of", "article"),
 					resource.TestCheckResourceAttr(resourceName, "published", "false"),
 					resource.TestCheckResourceAttr(resourceName, "tags.#", "0"),
 					resource.TestCheckResourceAttrSet(resourceName, "slug"),
@@ -82,10 +81,9 @@ func TestAccArticle_full(t *testing.T) {
 					resource.TestCheckResourceAttrSet(resourceName, "id"),
 					resource.TestCheckResourceAttr(resourceName, "title", article.Title),
 					resource.TestCheckResourceAttr(resourceName, "body_markdown", article.BodyMarkdown),
-					resource.TestCheckResourceAttr(resourceName, "type_of", "article"),
 					resource.TestCheckResourceAttr(resourceName, "published", strconv.FormatBool(published)),
 					resource.TestCheckResourceAttr(resourceName, "description", article.Description),
-					resource.TestCheckResourceAttr(resourceName, "main_image", article.CoverImage),
+					resource.TestCheckResourceAttr(resourceName, "cover_image", article.CoverImage),
 					resource.TestCheckResourceAttr(resourceName, "canonical_url", article.CanonicalURL),
 					resource.TestCheckResourceAttr(resourceName, "tags.#", strconv.Itoa(len(tags))),
 					resource.TestCheckResourceAttrSet(resourceName, "slug"),
@@ -98,10 +96,9 @@ func TestAccArticle_full(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(resourceName, "title", articleUpd.Title),
 					resource.TestCheckResourceAttr(resourceName, "body_markdown", articleUpd.BodyMarkdown),
-					resource.TestCheckResourceAttr(resourceName, "type_of", "article"),
 					resource.TestCheckResourceAttr(resourceName, "published", strconv.FormatBool(published)),
 					resource.TestCheckResourceAttr(resourceName, "description", articleUpd.Description),
-					resource.TestCheckResourceAttr(resourceName, "main_image", articleUpd.CoverImage),
+					resource.TestCheckResourceAttr(resourceName, "cover_image", articleUpd.CoverImage),
 					resource.TestCheckResourceAttr(resourceName, "canonical_url", articleUpd.CanonicalURL),
 					resource.TestCheckResourceAttr(resourceName, "tags.#", strconv.Itoa(len(articleUpd.TagList))),
 					resource.TestCheckResourceAttrSet(resourceName, "slug"),
@@ -155,7 +152,7 @@ resource "forem_article" "test" {
 	description   = %q
 	canonical_url = %q
 	series        = %q
-	main_image    = %q
+	cover_image   = %q
 	tags          = %s
 }`, article.Title, article.BodyMarkdown, article.Published, article.Description, article.CanonicalURL, series,
 		article.CoverImage, strings.Join(strings.Split(fmt.Sprintf("%q\n", article.TagList), " "), ", "))

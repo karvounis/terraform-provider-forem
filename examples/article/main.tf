@@ -9,7 +9,4 @@ terraform {
   }
 }
 
-provider "forem" {
-  api_key = var.api_key
-  host    = var.host
-}
+provider "forem" {}

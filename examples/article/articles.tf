@@ -15,7 +15,7 @@ resource "forem_article" "example_basic" {
 resource "forem_article" "example_full" {
   title         = "My first article using TF Forem provider!"
   published     = true
-  main_image    = "https://www.hdnicewallpapers.com/Walls/Big/Rainbow/Rainbow_on_Mountain_HD_Image.jpg"
+  cover_image   = "https://www.hdnicewallpapers.com/Walls/Big/Rainbow/Rainbow_on_Mountain_HD_Image.jpg"
   description   = "That is a description!"
   canonical_url = "https://github.com/karvounis"
   series        = local.series

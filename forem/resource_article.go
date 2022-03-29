@@ -27,147 +27,133 @@ func resourceArticle() *schema.Resource {
 			StateContext: schema.ImportStatePassthroughContext,
 		},
 		Schema: map[string]*schema.Schema{
-			"type_of": {
-				Type:     schema.TypeString,
-				Computed: true,
-			},
 			"id": {
-				Type:     schema.TypeString,
-				Computed: true,
+				Description: "ID of the article.",
+				Type:        schema.TypeString,
+				Computed:    true,
 			},
 			"title": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"slug": {
-				Type:     schema.TypeString,
-				Computed: true,
-			},
-			"body_markdown": {
+				Description: "Description of the article.",
 				Type:        schema.TypeString,
 				Required:    true,
+			},
+			"slug": {
+				Description: "Slug of the article.",
+				Type:        schema.TypeString,
+				Computed:    true,
+			},
+			"body_markdown": {
 				Description: "The body of the article in Markdown format.",
+				Type:        schema.TypeString,
+				Required:    true,
 			},
 			"tags": {
+				Description: "List of tags related to the article.",
 				Type:        schema.TypeList,
 				Optional:    true,
 				MaxItems:    MaxArticleTags,
-				Description: "Tags related to the article.",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
 			"published": {
+				Description: "True to create a published article, false otherwise. Defaults to false.",
 				Type:        schema.TypeBool,
 				Optional:    true,
 				Default:     false,
-				Description: "True to create a published article, false otherwise. Defaults to false",
 			},
 			"series": {
+				Description: "Article series name. All articles belonging to the same series need to have the same name in this parameter.",
 				Type:        schema.TypeString,
 				Optional:    true,
-				Description: "Article series name. All articles belonging to the same series need to have the same name in this parameter.",
 			},
-			"main_image": {
+			"cover_image": {
+				Description:  "URL of the cover image of the article.",
 				Type:         schema.TypeString,
 				Optional:     true,
 				ValidateFunc: validation.IsURLWithHTTPorHTTPS,
 			},
 			"canonical_url": {
+				Description:  "Canonical URL of the article.",
 				Type:         schema.TypeString,
 				Optional:     true,
 				Computed:     true,
 				ValidateFunc: validation.IsURLWithHTTPorHTTPS,
 			},
-			"cover_image": {
-				Type:     schema.TypeString,
-				Computed: true,
-			},
-			"social_image": {
-				Type:     schema.TypeString,
-				Computed: true,
-			},
 			"url": {
-				Type:     schema.TypeString,
-				Computed: true,
+				Description: "Full URL.",
+				Type:        schema.TypeString,
+				Computed:    true,
 			},
 			"description": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Computed: true,
-			},
-			"readable_publish_date": {
-				Type:     schema.TypeString,
-				Computed: true,
-			},
-			"created_at": {
-				Type:     schema.TypeString,
-				Computed: true,
-			},
-			"crossposted_at": {
-				Type:     schema.TypeString,
-				Computed: true,
-			},
-			"edited_at": {
-				Type:     schema.TypeString,
-				Computed: true,
+				Description: "Article description.",
+				Type:        schema.TypeString,
+				Optional:    true,
+				Computed:    true,
 			},
 			"published_at": {
-				Type:     schema.TypeString,
-				Computed: true,
-			},
-			"last_comment_at": {
-				Type:     schema.TypeString,
-				Computed: true,
+				Description: "When the article was published.",
+				Type:        schema.TypeString,
+				Computed:    true,
 			},
 			"published_timestamp": {
-				Type:     schema.TypeString,
-				Computed: true,
+				Description: "When the article was published.",
+				Type:        schema.TypeString,
+				Computed:    true,
 			},
 			"path": {
-				Type:     schema.TypeString,
-				Computed: true,
+				Description: "Path of the article URL.",
+				Type:        schema.TypeString,
+				Computed:    true,
 			},
 			"organization_id": {
+				Description: "Only users belonging to an organization can assign the article to it.",
 				Type:        schema.TypeInt,
 				Optional:    true,
-				Description: "Only users belonging to an organization can assign the article to it",
 			},
 			"comments_count": {
-				Type:     schema.TypeInt,
-				Computed: true,
+				Description: "Number of comments.",
+				Type:        schema.TypeInt,
+				Computed:    true,
 			},
 			"positive_reactions_count": {
-				Type:     schema.TypeInt,
-				Computed: true,
+				Description: "Number of positive reactions.",
+				Type:        schema.TypeInt,
+				Computed:    true,
 			},
 			"public_reactions_count": {
-				Type:     schema.TypeInt,
-				Computed: true,
+				Description: "Number of public reactions.",
+				Type:        schema.TypeInt,
+				Computed:    true,
 			},
 			"reading_time_minutes": {
-				Type:     schema.TypeInt,
-				Computed: true,
+				Description: "Article reading time in minutes.",
+				Type:        schema.TypeInt,
+				Computed:    true,
 			},
 			"page_views_count": {
-				Type:     schema.TypeInt,
-				Computed: true,
+				Description: "Number of views.",
+				Type:        schema.TypeInt,
+				Computed:    true,
 			},
 			"user": {
-				Type:     schema.TypeMap,
-				Computed: true,
+				Description: "User object of the article.",
+				Type:        schema.TypeMap,
+				Computed:    true,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
 			},
 			"organization": {
-				Type:     schema.TypeMap,
-				Computed: true,
+				Description: "Organization object of the article.",
+				Type:        schema.TypeMap,
+				Computed:    true,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
 			},
 			"flare_tag": {
-				Type:     schema.TypeMap,
-				Computed: true,
+				Description: "Flare tag object of the article.",
+				Type:        schema.TypeMap,
+				Computed:    true,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
@@ -195,7 +181,7 @@ func resourceArticleCreate(ctx context.Context, d *schema.ResourceData, meta int
 	if v, ok := d.GetOk("series"); ok {
 		ab.Article.Series = v.(string)
 	}
-	if v, ok := d.GetOk("main_image"); ok {
+	if v, ok := d.GetOk("cover_image"); ok {
 		ab.Article.MainImage = v.(string)
 	}
 	if v, ok := d.GetOk("canonical_url"); ok {
@@ -232,7 +218,7 @@ func resourceArticleCreate(ctx context.Context, d *schema.ResourceData, meta int
 func resourceArticleUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(*dev.Client)
 
-	if d.HasChanges("title", "body_markdown", "published", "series", "main_image", "description", "tags", "organization_id", "canonical_url") {
+	if d.HasChanges("title", "body_markdown", "published", "series", "cover_image", "description", "tags", "organization_id", "canonical_url") {
 		var ab dev.ArticleBodySchema
 		ab.Article.Title = d.Get("title").(string)
 		ab.Article.BodyMarkdown = d.Get("body_markdown").(string)
@@ -243,7 +229,7 @@ func resourceArticleUpdate(ctx context.Context, d *schema.ResourceData, meta int
 		if v, ok := d.GetOk("series"); ok {
 			ab.Article.Series = v.(string)
 		}
-		if v, ok := d.GetOk("main_image"); ok {
+		if v, ok := d.GetOk("cover_image"); ok {
 			ab.Article.MainImage = v.(string)
 		}
 		if v, ok := d.GetOk("description"); ok {
@@ -304,7 +290,6 @@ func resourceArticleRead(ctx context.Context, d *schema.ResourceData, meta inter
 		page++
 	}
 
-	d.Set("type_of", article.TypeOf)
 	d.SetId(id)
 	d.Set("title", article.Title)
 	d.Set("description", article.Description)
@@ -318,10 +303,6 @@ func resourceArticleRead(ctx context.Context, d *schema.ResourceData, meta inter
 	d.Set("published", article.Published)
 	d.Set("published_at", article.PublishedAt)
 	d.Set("published_timestamp", article.PublishedTimestamp)
-	d.Set("created_at", article.CreatedAt)
-	d.Set("crossposted_at", article.CrosspostedAt)
-	d.Set("edited_at", article.EditedAt)
-	d.Set("last_comment_at", article.LastCommentAt)
 
 	d.Set("comments_count", article.CommentsCount)
 	d.Set("positive_reactions_count", article.PositiveReactionsCount)
