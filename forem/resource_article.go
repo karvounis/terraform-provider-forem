@@ -33,7 +33,7 @@ func resourceArticle() *schema.Resource {
 				Computed:    true,
 			},
 			"title": {
-				Description: "Description of the article.",
+				Description: "Title of the article.",
 				Type:        schema.TypeString,
 				Required:    true,
 			},
@@ -79,7 +79,7 @@ func resourceArticle() *schema.Resource {
 				ValidateFunc: validation.IsURLWithHTTPorHTTPS,
 			},
 			"url": {
-				Description: "Full URL.",
+				Description: "Full article URL.",
 				Type:        schema.TypeString,
 				Computed:    true,
 			},
