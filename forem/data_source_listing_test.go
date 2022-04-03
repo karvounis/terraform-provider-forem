@@ -24,7 +24,6 @@ func TestAccListingDataSource(t *testing.T) {
 					resource.TestCheckResourceAttrSet(resourceName, "slug"),
 					resource.TestCheckResourceAttrSet(resourceName, "body_markdown"),
 					resource.TestCheckResourceAttrSet(resourceName, "category"),
-					resource.TestCheckResourceAttrSet(resourceName, "processed_html"),
 				),
 			},
 		},

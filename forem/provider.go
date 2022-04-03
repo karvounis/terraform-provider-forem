@@ -14,8 +14,7 @@ const (
 )
 
 func init() {
-	// Set descriptions to support markdown syntax, this will be used in document generation
-	// and the language server.
+	// Set descriptions to support markdown syntax, this will be used in document generation and the language server.
 	schema.DescriptionKind = schema.StringMarkdown
 }
 
@@ -25,11 +24,13 @@ func Provider() *schema.Provider {
 		ConfigureContextFunc: providerConfigure,
 		Schema: map[string]*schema.Schema{
 			"api_key": {
+				Description: "API key to be able to communicate with the FOREM API. Can be specified with the `FOREM_API_KEY` environment variable.",
 				Type:        schema.TypeString,
 				Optional:    true,
 				DefaultFunc: schema.EnvDefaultFunc("FOREM_API_KEY", nil),
 			},
 			"host": {
+				Description: "Host of the FOREM API. You can specify the `dev.to` or any other Forem installation. Can be specified with the `FOREM_HOST` environment variable.",
 				Type:        schema.TypeString,
 				Optional:    true,
 				DefaultFunc: schema.EnvDefaultFunc("FOREM_HOST", DEV_TO_BASE_URL),
