@@ -3,6 +3,7 @@ package forem
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -14,11 +15,20 @@ const (
 )
 
 func init() {
-	// Set descriptions to support markdown syntax, this will be used in document generation and the language server.
 	schema.DescriptionKind = schema.StringMarkdown
+	schema.SchemaDescriptionBuilder = func(s *schema.Schema) string {
+		desc := s.Description
+		if s.Default != nil {
+			desc += fmt.Sprintf(" Defaults to `%v`.", s.Default)
+		}
+		if s.Deprecated != "" {
+			desc += " " + s.Deprecated
+		}
+		return strings.TrimSpace(desc)
+	}
 }
 
-// Provider initialises the Provider
+// Provider initialises the Forem Provider
 func Provider() *schema.Provider {
 	return &schema.Provider{
 		ConfigureContextFunc: providerConfigure,
@@ -26,13 +36,13 @@ func Provider() *schema.Provider {
 			"api_key": {
 				Description: "API key to be able to communicate with the FOREM API. Can be specified with the `FOREM_API_KEY` environment variable.",
 				Type:        schema.TypeString,
-				Optional:    true,
+				Required:    true,
 				DefaultFunc: schema.EnvDefaultFunc("FOREM_API_KEY", nil),
 			},
 			"host": {
-				Description: "Host of the FOREM API. You can specify the `dev.to` or any other Forem installation. Can be specified with the `FOREM_HOST` environment variable.",
+				Description: "Host of the FOREM API. You can specify the `dev.to` or any other Forem installation. Can be specified with the `FOREM_HOST` environment variable. Default: `https://dev.to/api`.",
 				Type:        schema.TypeString,
-				Optional:    true,
+				Required:    true,
 				DefaultFunc: schema.EnvDefaultFunc("FOREM_HOST", DEV_TO_BASE_URL),
 			},
 		},

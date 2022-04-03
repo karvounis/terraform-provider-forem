@@ -12,8 +12,9 @@ import (
 
 func dataSourceListing() *schema.Resource {
 	return &schema.Resource{
-		Description: "`forem_listing` data source that fetches information about a specific listing.\n\n" +
-			"## API Docs\n\nhttps://developers.forem.com/api#operation/getListingById",
+		Description: "`forem_listing` data source that fetches information about a specific listing." +
+			"\n\n## API Docs\n\n" +
+			"https://developers.forem.com/api#operation/getListingById",
 		ReadContext: dataSourceListingRead,
 		Schema: map[string]*schema.Schema{
 			"id": {

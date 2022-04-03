@@ -17,8 +17,9 @@ const (
 
 func dataSourceFollowedTags() *schema.Resource {
 	return &schema.Resource{
-		Description: "`forem_followed_tags` can be used to fetch the followed tags of the user.\n\n" +
-			"## API Docs\n\nhttps://developers.forem.com/api#operation/getFollowedTags",
+		Description: "`forem_followed_tags` can be used to fetch the followed tags of the user." +
+			"\n\n## API Docs\n\n" +
+			"https://developers.forem.com/api#operation/getFollowedTags",
 		ReadContext: dataSourceFollowedTagsRead,
 		Schema: map[string]*schema.Schema{
 			"tags": {
