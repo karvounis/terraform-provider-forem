@@ -12,58 +12,56 @@ import (
 
 func dataSourceListing() *schema.Resource {
 	return &schema.Resource{
+		Description: "`forem_listing` data source that fetches information about a specific listing. https://developers.forem.com/api#operation/getListingById",
 		ReadContext: dataSourceListingRead,
 		Schema: map[string]*schema.Schema{
-			"type_of": {
-				Type:     schema.TypeString,
-				Computed: true,
-			},
 			"id": {
-				Type:     schema.TypeString,
-				Required: true,
+				Description: "ID of the listing.",
+				Type:        schema.TypeString,
+				Required:    true,
 			},
 			"title": {
-				Type:     schema.TypeString,
-				Optional: true,
+				Description: "Title of the listing.",
+				Type:        schema.TypeString,
+				Optional:    true,
 			},
 			"slug": {
-				Type:     schema.TypeString,
-				Computed: true,
+				Description: "Slug of the listing.",
+				Type:        schema.TypeString,
+				Computed:    true,
 			},
 			"body_markdown": {
-				Type:     schema.TypeString,
-				Computed: true,
+				Description: "The body of the listing in Markdown format.",
+				Type:        schema.TypeString,
+				Computed:    true,
 			},
 			"category": {
-				Type:     schema.TypeString,
-				Computed: true,
-			},
-			"processed_html": {
-				Type:     schema.TypeString,
-				Computed: true,
+				Description: "Category of the listing.",
+				Type:        schema.TypeString,
+				Computed:    true,
 			},
 			"published": {
-				Type:     schema.TypeBool,
-				Computed: true,
-			},
-			"tag_list": {
-				Type:     schema.TypeString,
-				Computed: true,
+				Description: "Whether the listing is published or not.",
+				Type:        schema.TypeBool,
+				Computed:    true,
 			},
 			"tags": {
-				Type:     schema.TypeList,
-				Computed: true,
-				Elem:     &schema.Schema{Type: schema.TypeString},
+				Description: "List of tags related to the listing.",
+				Type:        schema.TypeList,
+				Computed:    true,
+				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
 			"user": {
-				Type:     schema.TypeMap,
-				Computed: true,
-				Elem:     &schema.Schema{Type: schema.TypeString},
+				Description: "User that has created this listing.",
+				Type:        schema.TypeMap,
+				Computed:    true,
+				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
 			"organization": {
-				Type:     schema.TypeMap,
-				Computed: true,
-				Elem:     &schema.Schema{Type: schema.TypeString},
+				Description: "Organization related to this listing.",
+				Type:        schema.TypeMap,
+				Computed:    true,
+				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
 		},
 	}
@@ -80,15 +78,12 @@ func dataSourceListingRead(ctx context.Context, d *schema.ResourceData, meta int
 	}
 	tflog.Debug(ctx, fmt.Sprintf("Found listing: %s", id))
 
-	d.Set("type_of", listingResp.TypeOf)
 	d.SetId(id)
 	d.Set("title", listingResp.Title)
 	d.Set("slug", listingResp.Slug)
 	d.Set("body_markdown", listingResp.BodyMarkdown)
 	d.Set("category", listingResp.Category)
-	d.Set("processed_html", listingResp.ProcessedHTML)
 	d.Set("published", listingResp.Published)
-	d.Set("tag_list", listingResp.TagList)
 	d.Set("tags", listingResp.Tags)
 
 	if listingResp.User != nil {

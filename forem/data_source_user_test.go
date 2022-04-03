@@ -24,7 +24,6 @@ func TestAccUserDataSource(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(dataSourceName, "username", username),
 					resource.TestCheckResourceAttrSet(dataSourceName, "id"),
-					resource.TestCheckResourceAttr(dataSourceName, "type_of", "user"),
 					resource.TestCheckResourceAttrSet(dataSourceName, "name"),
 					resource.TestCheckResourceAttrSet(dataSourceName, "joined_at"),
 					resource.TestCheckResourceAttrSet(dataSourceName, "profile_image"),
@@ -35,7 +34,6 @@ func TestAccUserDataSource(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttrSet(dataSourceName, "username"),
 					resource.TestCheckResourceAttr(dataSourceName, "id", userID),
-					resource.TestCheckResourceAttr(dataSourceName, "type_of", "user"),
 					resource.TestCheckResourceAttrSet(dataSourceName, "name"),
 					resource.TestCheckResourceAttrSet(dataSourceName, "joined_at"),
 					resource.TestCheckResourceAttrSet(dataSourceName, "profile_image"),

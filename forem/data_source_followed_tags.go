@@ -17,24 +17,29 @@ const (
 
 func dataSourceFollowedTags() *schema.Resource {
 	return &schema.Resource{
+		Description: "`forem_followed_tags` can be used to fetch the followed tags of the user. https://developers.forem.com/api#operation/getFollowedTags",
 		ReadContext: dataSourceFollowedTagsRead,
 		Schema: map[string]*schema.Schema{
 			"tags": {
-				Type:     schema.TypeList,
-				Computed: true,
+				Description: "List of user's followed tags.",
+				Type:        schema.TypeList,
+				Computed:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"id": {
-							Type:     schema.TypeInt,
-							Computed: true,
+							Description: "ID of the tag.",
+							Type:        schema.TypeInt,
+							Computed:    true,
 						},
 						"name": {
-							Type:     schema.TypeString,
-							Computed: true,
+							Description: "Name of the tag.",
+							Type:        schema.TypeString,
+							Computed:    true,
 						},
 						"points": {
-							Type:     schema.TypeFloat,
-							Computed: true,
+							Description: "Points of the tag.",
+							Type:        schema.TypeFloat,
+							Computed:    true,
 						},
 					},
 				},

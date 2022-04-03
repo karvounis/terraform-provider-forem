@@ -19,7 +19,6 @@ func TestAccListingDataSource(t *testing.T) {
 			{
 				Config: testAccListingDataSourceConfig_id(listingID),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr(resourceName, "type_of", "listing"),
 					resource.TestCheckResourceAttr(resourceName, "id", listingID),
 					resource.TestCheckResourceAttrSet(resourceName, "title"),
 					resource.TestCheckResourceAttrSet(resourceName, "slug"),
