@@ -3,12 +3,12 @@
 page_title: "forem_followed_tags Data Source - terraform-provider-forem"
 subcategory: ""
 description: |-
-  
+  forem_followed_tags can be used to fetch the followed tags of the user. https://developers.forem.com/api#operation/getFollowedTags
 ---
 
 # forem_followed_tags (Data Source)
 
-
+`forem_followed_tags` can be used to fetch the followed tags of the user. https://developers.forem.com/api#operation/getFollowedTags
 
 ## Example Usage
 
@@ -25,7 +25,7 @@ data "forem_followed_tags" "example" {}
 
 ### Read-Only
 
-- `tags` (List of Object) (see [below for nested schema](#nestedatt--tags))
+- `tags` (List of Object) List of user's followed tags. (see [below for nested schema](#nestedatt--tags))
 
 <a id="nestedatt--tags"></a>
 ### Nested Schema for `tags`

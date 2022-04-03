@@ -3,12 +3,12 @@
 page_title: "forem_listing Data Source - terraform-provider-forem"
 subcategory: ""
 description: |-
-  
+  forem_listing data source that fetches information about a specific listing. https://developers.forem.com/api#operation/getListingById
 ---
 
 # forem_listing (Data Source)
 
-
+`forem_listing` data source that fetches information about a specific listing. https://developers.forem.com/api#operation/getListingById
 
 ## Example Usage
 
@@ -23,23 +23,20 @@ data "forem_listing" "example" {
 
 ### Required
 
-- `id` (String) The ID of this resource.
+- `id` (String) ID of the listing.
 
 ### Optional
 
-- `title` (String)
+- `title` (String) Title of the listing.
 
 ### Read-Only
 
-- `body_markdown` (String)
-- `category` (String)
-- `organization` (Map of String)
-- `processed_html` (String)
-- `published` (Boolean)
-- `slug` (String)
-- `tag_list` (String)
-- `tags` (List of String)
-- `type_of` (String)
-- `user` (Map of String)
+- `body_markdown` (String) The body of the listing in Markdown format.
+- `category` (String) Category of the listing.
+- `organization` (Map of String) Organization related to this listing.
+- `published` (Boolean) Whether the listing is published or not.
+- `slug` (String) Slug of the listing.
+- `tags` (List of String) List of tags related to the listing.
+- `user` (Map of String) User that has created this listing.
 
 

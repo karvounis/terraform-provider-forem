@@ -3,12 +3,12 @@
 page_title: "forem_user Data Source - terraform-provider-forem"
 subcategory: ""
 description: |-
-  
+  forem_user fetches information about a particular user. You can either use the user's ID or the user's username. https://developers.forem.com/api#operation/getUser
 ---
 
 # forem_user (Data Source)
 
-
+`forem_user` fetches information about a particular user. You can either use the user's ID or the user's username. https://developers.forem.com/api#operation/getUser
 
 ## Example Usage
 
@@ -27,19 +27,18 @@ data "forem_user" "example_username" {
 
 ### Optional
 
-- `id` (String) The ID of this resource.
-- `username` (String)
+- `id` (String) ID of the user. Please specify the `id` or the `username` of the desired user.
+- `username` (String) Username of the user. Please specify the `id` or the `username` of the desired user.
 
 ### Read-Only
 
-- `github_username` (String)
-- `joined_at` (String)
-- `location` (String)
-- `name` (String)
-- `profile_image` (String)
-- `summary` (String)
-- `twitter_username` (String)
-- `type_of` (String)
-- `website_url` (String)
+- `github_username` (String) User's github username. Can be null.
+- `joined_at` (String) Date of joining (formatted with strftime '%b %e, %Y').
+- `location` (String) User's location. Can be null.
+- `name` (String) Name of the user.
+- `profile_image` (String) Profile image (320x320).
+- `summary` (String) Summary of the user.
+- `twitter_username` (String) User's twitter username. Can be null.
+- `website_url` (String) User's website URL. Can be null.
 
 

@@ -31,3 +31,9 @@ repos:
     hooks:
       - id: terraform_fmt
       - id: terraform_tflint
+  - repo: local
+    hooks:
+      - id: tfplugindocs
+        name: Generate Terraform plugin documentation.
+        entry: make docs
+        language: system
