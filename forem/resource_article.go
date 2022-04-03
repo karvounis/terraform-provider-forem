@@ -19,6 +19,10 @@ const (
 
 func resourceArticle() *schema.Resource {
 	return &schema.Resource{
+		Description: "`forem_article` resource creates and updates a particular article." +
+			"\n\n## API Docs\n\n" +
+			"- https://developers.forem.com/api#operation/createArticle\n" +
+			"- https://developers.forem.com/api#operation/updateArticle",
 		ReadContext:   resourceArticleRead,
 		CreateContext: resourceArticleCreate,
 		UpdateContext: resourceArticleUpdate,
@@ -55,7 +59,7 @@ func resourceArticle() *schema.Resource {
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
 			"published": {
-				Description: "True to create a published article, false otherwise. Defaults to false.",
+				Description: "Set to `true` to create a published article.",
 				Type:        schema.TypeBool,
 				Optional:    true,
 				Default:     false,

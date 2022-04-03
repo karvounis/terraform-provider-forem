@@ -12,7 +12,9 @@ import (
 
 func dataSourceArticle() *schema.Resource {
 	return &schema.Resource{
-		Description: "Article Data source!",
+		Description: "`forem_article` data source fetches information about a particular article." +
+			"\n\n## API Docs\n\n" +
+			"https://developers.forem.com/api#operation/getArticleById",
 		ReadContext: dataSourceArticleRead,
 		Schema: map[string]*schema.Schema{
 			"id": {

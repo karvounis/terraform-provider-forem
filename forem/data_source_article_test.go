@@ -22,7 +22,6 @@ func TestAccArticleDataSource(t *testing.T) {
 					resource.TestCheckResourceAttr(resourceName, "id", articleID),
 					resource.TestCheckResourceAttrSet(resourceName, "title"),
 					resource.TestCheckResourceAttrSet(resourceName, "body_markdown"),
-					resource.TestCheckResourceAttr(resourceName, "type_of", "article"),
 					resource.TestCheckResourceAttrSet(resourceName, "slug"),
 					resource.TestCheckResourceAttrSet(resourceName, "path"),
 				),

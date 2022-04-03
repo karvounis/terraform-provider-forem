@@ -3,15 +3,22 @@ locals {
   tags   = ["golang", "terraform", "forem", "md"]
 }
 
+# Minimum required values set
 resource "forem_article" "example_basic" {
   title         = "This a basic article"
   body_markdown = "A simple single-line body that is very basic..."
-  published     = true
+}
+
+# Article generated from a file
+resource "forem_article" "example_file" {
+  title         = "Article from a file!"
+  body_markdown = file("${path.module}/files/example.md")
   series        = local.series
 
   tags = local.tags
 }
 
+# Full Article example
 resource "forem_article" "example_full" {
   title         = "My first article using TF Forem provider!"
   published     = true
@@ -43,10 +50,4 @@ resource "forem_article" "example_full" {
   EOT
 
   tags = local.tags
-}
-
-
-resource "forem_article" "example_file" {
-  title         = "Article from a file!"
-  body_markdown = file("${path.module}/files/example.md")
 }

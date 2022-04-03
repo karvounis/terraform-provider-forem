@@ -13,53 +13,62 @@ import (
 
 func dataSourceUser() *schema.Resource {
 	return &schema.Resource{
+		Description: "``forem_user` fetches information about a particular user. You can either use the user's ID or the user's username." +
+			"\n\n## API Docs\n\n" +
+			"https://developers.forem.com/api#operation/getUser",
 		ReadContext: dataSourceUserRead,
 		Schema: map[string]*schema.Schema{
-			"type_of": {
-				Type:     schema.TypeString,
-				Computed: true,
-			},
 			"id": {
+				Description:  "ID of the user. Please specify the `id` or the `username` of the desired user.",
 				Type:         schema.TypeString,
 				Optional:     true,
 				ExactlyOneOf: []string{"id", "username"},
 			},
 			"username": {
+				Description:  "Username of the user. Please specify the `id` or the `username` of the desired user.",
 				Type:         schema.TypeString,
 				Optional:     true,
 				ExactlyOneOf: []string{"id", "username"},
 			},
 			"name": {
-				Type:     schema.TypeString,
-				Computed: true,
+				Description: "Name of the user.",
+				Type:        schema.TypeString,
+				Computed:    true,
 			},
 			"summary": {
-				Type:     schema.TypeString,
-				Computed: true,
+				Description: "Summary of the user.",
+				Type:        schema.TypeString,
+				Computed:    true,
 			},
 			"twitter_username": {
-				Type:     schema.TypeString,
-				Computed: true,
+				Description: "User's twitter username. Can be null.",
+				Type:        schema.TypeString,
+				Computed:    true,
 			},
 			"github_username": {
-				Type:     schema.TypeString,
-				Computed: true,
+				Description: "User's github username. Can be null.",
+				Type:        schema.TypeString,
+				Computed:    true,
 			},
 			"website_url": {
-				Type:     schema.TypeString,
-				Computed: true,
+				Description: "User's website URL. Can be null.",
+				Type:        schema.TypeString,
+				Computed:    true,
 			},
 			"location": {
-				Type:     schema.TypeString,
-				Computed: true,
+				Description: "User's location. Can be null.",
+				Type:        schema.TypeString,
+				Computed:    true,
 			},
 			"joined_at": {
-				Type:     schema.TypeString,
-				Computed: true,
+				Description: "Date of joining (formatted with strftime '%b %e, %Y').",
+				Type:        schema.TypeString,
+				Computed:    true,
 			},
 			"profile_image": {
-				Type:     schema.TypeString,
-				Computed: true,
+				Description: "Profile image (320x320).",
+				Type:        schema.TypeString,
+				Computed:    true,
 			},
 		},
 	}
@@ -78,7 +87,6 @@ func dataSourceUserRead(ctx context.Context, d *schema.ResourceData, meta interf
 			return diag.FromErr(err)
 		}
 		tflog.Debug(ctx, fmt.Sprintf("Found user with id: %s", id))
-		d.Set("type_of", userResp.TypeOf)
 	} else {
 		username := d.Get("username").(string)
 		tflog.Debug(ctx, fmt.Sprintf("Getting user with username: %s", username))
@@ -90,7 +98,6 @@ func dataSourceUserRead(ctx context.Context, d *schema.ResourceData, meta interf
 	}
 
 	d.SetId(strconv.Itoa(int(userResp.ID)))
-	d.Set("type_of", userResp.TypeOf)
 	d.Set("username", userResp.Username)
 	d.Set("name", userResp.Name)
 	d.Set("summary", userResp.Summary)
