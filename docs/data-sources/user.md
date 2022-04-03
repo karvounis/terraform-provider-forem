@@ -3,12 +3,18 @@
 page_title: "forem_user Data Source - terraform-provider-forem"
 subcategory: ""
 description: |-
-  forem_user fetches information about a particular user. You can either use the user's ID or the user's username. https://developers.forem.com/api#operation/getUser
+  `forem_user fetches information about a particular user. You can either use the user's ID or the user's username.
+  API Docs
+  https://developers.forem.com/api#operation/getUser
 ---
 
 # forem_user (Data Source)
 
-`forem_user` fetches information about a particular user. You can either use the user's ID or the user's username. https://developers.forem.com/api#operation/getUser
+``forem_user` fetches information about a particular user. You can either use the user's ID or the user's username.
+
+## API Docs
+
+https://developers.forem.com/api#operation/getUser
 
 ## Example Usage
 

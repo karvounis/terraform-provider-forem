@@ -13,7 +13,8 @@ import (
 
 func dataSourceUser() *schema.Resource {
 	return &schema.Resource{
-		Description: "`forem_user` fetches information about a particular user. You can either use the user's ID or the user's username. https://developers.forem.com/api#operation/getUser",
+		Description: "``forem_user` fetches information about a particular user. You can either use the user's ID or the user's username.\n\n" +
+			"## API Docs\n\nhttps://developers.forem.com/api#operation/getUser",
 		ReadContext: dataSourceUserRead,
 		Schema: map[string]*schema.Schema{
 			"id": {

@@ -19,12 +19,10 @@ const (
 
 func resourceArticle() *schema.Resource {
 	return &schema.Resource{
-		Description: `forem_article resource creates and updates a particular article.
-
-		Useful links:
-		- https://developers.forem.com/api#operation/createArticle
-		- https://developers.forem.com/api#operation/updateArticle
-		`,
+		Description: "`forem_article` resource creates and updates a particular article.\n\n" +
+			"## API Docs\n\n" +
+			"- https://developers.forem.com/api#operation/createArticle\n" +
+			"- https://developers.forem.com/api#operation/updateArticle",
 		ReadContext:   resourceArticleRead,
 		CreateContext: resourceArticleCreate,
 		UpdateContext: resourceArticleUpdate,

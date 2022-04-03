@@ -4,18 +4,18 @@ page_title: "forem_article Resource - terraform-provider-forem"
 subcategory: ""
 description: |-
   forem_article resource creates and updates a particular article.
-      Useful links:
-      - https://developers.forem.com/api#operation/createArticle
-      - https://developers.forem.com/api#operation/updateArticle
+  API Docs
+  https://developers.forem.com/api#operation/createArticlehttps://developers.forem.com/api#operation/updateArticle
 ---
 
 # forem_article (Resource)
 
-forem_article resource creates and updates a particular article.
+`forem_article` resource creates and updates a particular article.
 
-		Useful links:
-		- https://developers.forem.com/api#operation/createArticle
-		- https://developers.forem.com/api#operation/updateArticle
+## API Docs
+
+- https://developers.forem.com/api#operation/createArticle
+- https://developers.forem.com/api#operation/updateArticle
 
 ## Example Usage
 

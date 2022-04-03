@@ -3,12 +3,18 @@
 page_title: "forem_article Data Source - terraform-provider-forem"
 subcategory: ""
 description: |-
-  forem_article data source fetches information about a particular article. https://developers.forem.com/api#operation/getArticleById
+  forem_article data source fetches information about a particular article.
+  API Docs
+  https://developers.forem.com/api#operation/getArticleById
 ---
 
 # forem_article (Data Source)
 
-`forem_article` data source fetches information about a particular article. https://developers.forem.com/api#operation/getArticleById
+`forem_article` data source fetches information about a particular article.
+
+## API Docs
+
+https://developers.forem.com/api#operation/getArticleById
 
 ## Example Usage
 

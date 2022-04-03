@@ -3,12 +3,18 @@
 page_title: "forem_listing Data Source - terraform-provider-forem"
 subcategory: ""
 description: |-
-  forem_listing data source that fetches information about a specific listing. https://developers.forem.com/api#operation/getListingById
+  forem_listing data source that fetches information about a specific listing.
+  API Docs
+  https://developers.forem.com/api#operation/getListingById
 ---
 
 # forem_listing (Data Source)
 
-`forem_listing` data source that fetches information about a specific listing. https://developers.forem.com/api#operation/getListingById
+`forem_listing` data source that fetches information about a specific listing.
+
+## API Docs
+
+https://developers.forem.com/api#operation/getListingById
 
 ## Example Usage
 
