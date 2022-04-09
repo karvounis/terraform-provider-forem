@@ -44,3 +44,7 @@ testacc:
 .PHONY: docs
 docs:
 	tfplugindocs generate
+
+.PHONY: tffmt
+tffmt:
+	terraform fmt -recursive .

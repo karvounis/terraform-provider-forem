@@ -3,6 +3,7 @@ package forem
 import (
 	"context"
 	"fmt"
+	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -12,15 +13,23 @@ import (
 
 func dataSourceArticle() *schema.Resource {
 	return &schema.Resource{
-		Description: "`forem_article` data source fetches information about a particular article." +
+		Description: "`forem_article` data source fetches information about a particular article. Please, specify either the `id` of the article or the `username` and `slug` combination." +
 			"\n\n## API Docs\n\n" +
 			"https://developers.forem.com/api#operation/getArticleById",
 		ReadContext: dataSourceArticleRead,
 		Schema: map[string]*schema.Schema{
 			"id": {
-				Description: "ID of the article.",
-				Type:        schema.TypeString,
-				Required:    true,
+				Description:  "ID of the article.",
+				Type:         schema.TypeString,
+				Optional:     true,
+				AtLeastOneOf: []string{"id", "username", "slug"},
+			},
+			"username": {
+				Description:  "User or organization username.",
+				Type:         schema.TypeString,
+				Optional:     true,
+				RequiredWith: []string{"slug"},
+				AtLeastOneOf: []string{"id", "username", "slug"},
 			},
 			"title": {
 				Description: "Title of the article.",
@@ -45,13 +54,15 @@ func dataSourceArticle() *schema.Resource {
 			"tags": {
 				Description: "List of tags related to the article.",
 				Type:        schema.TypeList,
-				Optional:    true,
+				Computed:    true,
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
 			"slug": {
-				Description: "Slug of the article.",
-				Type:        schema.TypeString,
-				Computed:    true,
+				Description:  "Slug of the article.",
+				Type:         schema.TypeString,
+				Optional:     true,
+				RequiredWith: []string{"username"},
+				AtLeastOneOf: []string{"id", "username", "slug"},
 			},
 			"path": {
 				Description: "Path of the article URL.",
@@ -154,16 +165,28 @@ func dataSourceArticle() *schema.Resource {
 func dataSourceArticleRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(*dev.Client)
 
-	id := d.Get("id").(string)
-
-	tflog.Debug(ctx, fmt.Sprintf("Getting article: %s", id))
-	articlesResp, err := client.GetPublishedArticleByID(id)
-	if err != nil {
-		return diag.FromErr(err)
+	var articlesResp *dev.ArticleVariant
+	var err error
+	if v, ok := d.GetOk("id"); ok {
+		id := v.(string)
+		tflog.Debug(ctx, fmt.Sprintf("Getting article with ID: %s", id))
+		articlesResp, err = client.GetPublishedArticleByID(id)
+		if err != nil {
+			return diag.FromErr(err)
+		}
+		tflog.Debug(ctx, fmt.Sprintf("Found article with ID: %s", id))
+	} else {
+		username := d.Get("username").(string)
+		slug := d.Get("slug").(string)
+		tflog.Debug(ctx, fmt.Sprintf("Getting article with username: %s and slug: %s", username, slug))
+		articlesResp, err = client.GetPublishedArticleByPath(username, slug)
+		if err != nil {
+			return diag.FromErr(err)
+		}
+		tflog.Debug(ctx, fmt.Sprintf("Found article with username: %s and slug: %s", username, slug))
 	}
-	tflog.Debug(ctx, fmt.Sprintf("Found article: %s", id))
 
-	d.SetId(id)
+	d.SetId(strconv.Itoa(int(articlesResp.ID)))
 	d.Set("title", articlesResp.Article.Title)
 	d.Set("description", articlesResp.Article.Description)
 	d.Set("body_markdown", articlesResp.Article.BodyMarkdown)
