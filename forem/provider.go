@@ -48,6 +48,7 @@ func Provider() *schema.Provider {
 		},
 		ResourcesMap: map[string]*schema.Resource{
 			"forem_article": resourceArticle(),
+			"forem_listing": resourceListing(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"forem_user":          dataSourceUser(),
