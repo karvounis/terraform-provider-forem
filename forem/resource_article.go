@@ -13,8 +13,8 @@ import (
 )
 
 const (
-	MaxArticleTags      = 4
-	ReadArticlesPerPage = 25
+	maxArticleTags      = 4
+	readArticlesPerPage = 25
 )
 
 func resourceArticle() *schema.Resource {
@@ -55,7 +55,7 @@ func resourceArticle() *schema.Resource {
 				Description: "List of tags related to the article.",
 				Type:        schema.TypeList,
 				Optional:    true,
-				MaxItems:    MaxArticleTags,
+				MaxItems:    maxArticleTags,
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
 			"published": {
@@ -269,7 +269,7 @@ func resourceArticleRead(ctx context.Context, d *schema.ResourceData, meta inter
 	tflog.Debug(ctx, fmt.Sprintf("Getting article: %s", id))
 
 	page := int32(1)
-	perPage := int32(ReadArticlesPerPage)
+	perPage := int32(readArticlesPerPage)
 	missing := true
 	var article dev.Article
 

@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	DEV_TO_BASE_URL = "https://dev.to/api"
+	devToBaseURL = "https://dev.to/api"
 )
 
 func init() {
@@ -43,7 +43,7 @@ func Provider() *schema.Provider {
 				Description: "Host of the FOREM API. You can specify the `dev.to` or any other Forem installation. Can be specified with the `FOREM_HOST` environment variable. Default: `https://dev.to/api`.",
 				Type:        schema.TypeString,
 				Required:    true,
-				DefaultFunc: schema.EnvDefaultFunc("FOREM_HOST", DEV_TO_BASE_URL),
+				DefaultFunc: schema.EnvDefaultFunc("FOREM_HOST", devToBaseURL),
 			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
