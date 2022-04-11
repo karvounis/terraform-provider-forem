@@ -13,12 +13,12 @@ import (
 )
 
 const (
-	MaxListingTags = 8
+	maxListingTags = 8
 )
 
 var (
-	AllowedListingCategories = []string{"cfp", "forhire", "collabs", "education", "jobs", "mentors", "products", "mentees", "forsale", "events", "misc"}
-	AllowedListingActions    = []string{"draft", "bump", "publish", "unpublish"}
+	allowedListingCategories = []string{"cfp", "forhire", "collabs", "education", "jobs", "mentors", "products", "mentees", "forsale", "events", "misc"}
+	allowedListingActions    = []string{"draft", "bump", "publish", "unpublish"}
 )
 
 func resourceListing() *schema.Resource {
@@ -54,13 +54,13 @@ func resourceListing() *schema.Resource {
 				Description:  "The category that the listing belongs to.",
 				Type:         schema.TypeString,
 				Required:     true,
-				ValidateFunc: validation.StringInSlice(AllowedListingCategories, false),
+				ValidateFunc: validation.StringInSlice(allowedListingCategories, false),
 			},
 			"tags": {
 				Description: "List of tags related to the listing.",
 				Type:        schema.TypeList,
 				Optional:    true,
-				MaxItems:    MaxListingTags,
+				MaxItems:    maxListingTags,
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
 			"contact_via_connect": {
@@ -83,7 +83,7 @@ func resourceListing() *schema.Resource {
 				Description:  "Set it to `draft` to create an unpublished listing.",
 				Type:         schema.TypeString,
 				Optional:     true,
-				ValidateFunc: validation.StringInSlice(AllowedListingActions, false),
+				ValidateFunc: validation.StringInSlice(allowedListingActions, false),
 			},
 			"organization_id": {
 				Description: "The id of the organization the user is creating the listing for. Only users belonging to an organization can assign the listing to it.",
@@ -134,22 +134,37 @@ func resourceListingCreate(ctx context.Context, d *schema.ResourceData, meta int
 
 	title := d.Get("title").(string)
 
-	var ab dev.ListingBodySchema
-	ab.Listing.Title = title
-	ab.Listing.BodyMarkdown = d.Get("body_markdown").(string)
+	var lbSchema dev.ListingBodySchema
+	lbSchema.Listing.Title = title
+	lbSchema.Listing.BodyMarkdown = d.Get("body_markdown").(string)
+	lbSchema.Listing.Category = d.Get("category").(dev.ListingCategory)
 
 	if v, ok := d.GetOk("tags"); ok {
-		tags := v.([]interface{})
-		tagsList := []string{}
-		for _, t := range tags {
-			tagsList = append(tagsList, t.(string))
+		tags := []string{}
+		for _, t := range v.([]interface{}) {
+			tags = append(tags, t.(string))
 		}
-		ab.Listing.Tags = tagsList
+		lbSchema.Listing.Tags = tags
+	}
+
+	if v, ok := d.GetOk("contact_via_connect"); ok {
+		lbSchema.Listing.ContactViaConnect = v.(bool)
+	}
+	if v, ok := d.GetOk("expires_at"); ok {
+		lbSchema.Listing.ExpiresAt = v.(string)
+	}
+	if v, ok := d.GetOk("location"); ok {
+		lbSchema.Listing.Location = v.(string)
+	}
+	if v, ok := d.GetOk("action"); ok {
+		lbSchema.Listing.Action = v.(dev.Action)
+	}
+	if v, ok := d.GetOk("organization_id"); ok {
+		lbSchema.Listing.OrganizationID = v.(int64)
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("Creating listing with title `%s`", title))
-
-	resp, err := client.CreateListing(ab, nil)
+	resp, err := client.CreateListing(lbSchema, nil)
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -161,82 +176,52 @@ func resourceListingCreate(ctx context.Context, d *schema.ResourceData, meta int
 }
 
 func resourceListingUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	client := meta.(*dev.Client)
-
-	if d.HasChanges("title", "body_markdown", "published", "series", "cover_image", "description", "tags", "organization_id", "canonical_url") {
-		var ab dev.ListingBodySchema
-		ab.Listing.Title = d.Get("title").(string)
-		ab.Listing.BodyMarkdown = d.Get("body_markdown").(string)
-
-		if v, ok := d.GetOk("tags"); ok {
-			tags := v.([]interface{})
-			tagsList := []string{}
-			for _, t := range tags {
-				tagsList = append(tagsList, t.(string))
-			}
-			ab.Listing.Tags = tagsList
-		}
-
-		_, err := client.UpdateListing(d.Id(), ab, nil)
-		if err != nil {
-			return diag.FromErr(err)
-		}
-	}
 	return resourceListingRead(ctx, d, meta)
 }
 
 func resourceListingRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	// client := meta.(*dev.Client)
+	client := meta.(*dev.Client)
 
-	// id := d.Get("id").(string)
-	// tflog.Debug(ctx, fmt.Sprintf("Getting listing: %s", id))
+	id := d.Get("id").(string)
+	tflog.Debug(ctx, fmt.Sprintf("Getting listing with ID: %s", id))
+	resp, err := client.GetListingByID(id)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	tflog.Debug(ctx, fmt.Sprintf("Found listing with ID: %s", id))
 
-	// d.SetId(id)
-	// d.Set("title", listing.Title)
-	// d.Set("description", listing.Description)
-	// d.Set("body_markdown", listing.BodyMarkdown)
-	// d.Set("slug", listing.Slug)
-	// d.Set("path", listing.Path)
-	// d.Set("url", listing.URL)
-	// d.Set("canonical_url", listing.CanonicalURL)
-	// d.Set("cover_image", listing.CoverImage)
+	d.SetId(id)
+	d.Set("title", resp.Title)
+	d.Set("body_markdown", resp.BodyMarkdown)
+	d.Set("slug", resp.Slug)
+	d.Set("category", resp.Category)
+	d.Set("published", resp.Published)
+	d.Set("tags", resp.Tags)
 
-	// d.Set("published", listing.Published)
-	// d.Set("published_at", listing.PublishedAt)
-	// d.Set("published_timestamp", listing.PublishedTimestamp)
+	if resp.User != nil {
+		d.Set("user", map[string]interface{}{
+			"name":             resp.User.Name,
+			"username":         resp.User.Username,
+			"twitter_username": resp.User.TwitterUsername,
+			"github_username":  resp.User.GithubUsername,
+			"website_url":      resp.User.WebsiteURL,
+			"profile_image":    resp.User.ProfileImage,
+		})
+	} else {
+		d.Set("user", map[string]interface{}{})
+	}
 
-	// d.Set("comments_count", listing.CommentsCount)
-	// d.Set("positive_reactions_count", listing.PositiveReactionsCount)
-	// d.Set("public_reactions_count", listing.PublicReactionsCount)
-	// d.Set("reading_time_minutes", listing.ReadingTimeMinutes)
-	// d.Set("page_views_count", listing.PageViewsCount)
-
-	// d.Set("tags", listing.TagList)
-
-	// if listing.User != nil {
-	// 	d.Set("user", map[string]interface{}{
-	// 		"name":             listing.User.Name,
-	// 		"username":         listing.User.Username,
-	// 		"twitter_username": listing.User.TwitterUsername,
-	// 		"github_username":  listing.User.GithubUsername,
-	// 		"website_url":      listing.User.WebsiteURL,
-	// 		"profile_image":    listing.User.ProfileImage,
-	// 	})
-	// } else {
-	// 	d.Set("user", map[string]interface{}{})
-	// }
-
-	// if listing.Organization != nil {
-	// 	d.Set("organization", map[string]interface{}{
-	// 		"name":             listing.Organization.Name,
-	// 		"username":         listing.Organization.Username,
-	// 		"slug":             listing.Organization.Slug,
-	// 		"profile_image":    listing.Organization.ProfileImage,
-	// 		"profile_image_90": listing.Organization.ProfileImage90,
-	// 	})
-	// } else {
-	// 	d.Set("organization", map[string]interface{}{})
-	// }
+	if resp.Organization != nil {
+		d.Set("organization", map[string]interface{}{
+			"name":             resp.Organization.Name,
+			"username":         resp.Organization.Username,
+			"slug":             resp.Organization.Slug,
+			"profile_image":    resp.Organization.ProfileImage,
+			"profile_image_90": resp.Organization.ProfileImage90,
+		})
+	} else {
+		d.Set("organization", map[string]interface{}{})
+	}
 
 	return nil
 }
