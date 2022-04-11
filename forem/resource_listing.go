@@ -125,6 +125,7 @@ func resourceListing() *schema.Resource {
 	}
 }
 
+// TODO: Waiting for API to allow deletion of a listing
 func resourceListingDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	return nil
 }
@@ -133,11 +134,12 @@ func resourceListingCreate(ctx context.Context, d *schema.ResourceData, meta int
 	client := meta.(*dev.Client)
 
 	title := d.Get("title").(string)
+	category := dev.ListingCategory(d.Get("category").(string))
 
 	var lbSchema dev.ListingBodySchema
 	lbSchema.Listing.Title = title
 	lbSchema.Listing.BodyMarkdown = d.Get("body_markdown").(string)
-	lbSchema.Listing.Category = d.Get("category").(dev.ListingCategory)
+	lbSchema.Listing.Category = category
 
 	if v, ok := d.GetOk("tags"); ok {
 		tags := []string{}
@@ -157,13 +159,13 @@ func resourceListingCreate(ctx context.Context, d *schema.ResourceData, meta int
 		lbSchema.Listing.Location = v.(string)
 	}
 	if v, ok := d.GetOk("action"); ok {
-		lbSchema.Listing.Action = v.(dev.Action)
+		lbSchema.Listing.Action = dev.Action(v.(string))
 	}
 	if v, ok := d.GetOk("organization_id"); ok {
 		lbSchema.Listing.OrganizationID = v.(int64)
 	}
 
-	tflog.Debug(ctx, fmt.Sprintf("Creating listing with title `%s`", title))
+	tflog.Debug(ctx, fmt.Sprintf("Creating listing with title `%s` and category `%s`", title, category))
 	resp, err := client.CreateListing(lbSchema, nil)
 	if err != nil {
 		return diag.FromErr(err)

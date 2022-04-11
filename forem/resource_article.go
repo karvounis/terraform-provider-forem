@@ -166,6 +166,7 @@ func resourceArticle() *schema.Resource {
 	}
 }
 
+// TODO: Waiting for API to allow deletion of an article
 func resourceArticleDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	return nil
 }

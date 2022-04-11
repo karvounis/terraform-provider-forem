@@ -233,8 +233,8 @@ github.com/joho/godotenv v1.4.0/go.mod h1:f4LDr5Voq0i2e/R5DDNOoa2zzDfwtkZa6DnEwA
 github.com/jstemmer/go-junit-report v0.0.0-20190106144839-af01ea7f8024/go.mod h1:6v2b51hI/fHJwM22ozAgKL4VKDeJcHhJFhtBdhmNjmU=
 github.com/jstemmer/go-junit-report v0.9.1 h1:6QPYqodiu3GuPL+7mfx+NwDdp2eTkp9IfEUpgAwUN0o=
 github.com/jstemmer/go-junit-report v0.9.1/go.mod h1:Brl9GWCQeLvo8nXZwPNNblvFj/XSXhF0NWZEnDohbsk=
-github.com/karvounis/dev-client-go v1.1.1 h1:DP1GZe3g6F5b9MaWZzjDRzDsBLEfTirWr+bdce2sDas=
-github.com/karvounis/dev-client-go v1.1.1/go.mod h1:NCxNSFLpa7x7cqvFnhZjNneVq+9jwBK+KwKc3SugyjQ=
+github.com/karvounis/dev-client-go v1.1.2 h1:bWu+0QUxjF3KRTs9QURgpSP42IX2B0jhX8viEVCKZJ0=
+github.com/karvounis/dev-client-go v1.1.2/go.mod h1:NCxNSFLpa7x7cqvFnhZjNneVq+9jwBK+KwKc3SugyjQ=
 github.com/kevinburke/ssh_config v0.0.0-20201106050909-4977a11b4351 h1:DowS9hvgyYSX4TO5NpyC606/Z4SxnNYbT+WX27or6Ck=
 github.com/kevinburke/ssh_config v0.0.0-20201106050909-4977a11b4351/go.mod h1:CT57kijsi8u/K/BOFA39wgDQJ9CxiF4nAY/ojJ6r6mM=
 github.com/kisielk/gotool v1.0.0/go.mod h1:XhKaO+MFFWcvkIS/tQcRk01m1F5IRFswLeQ+oQHNcck=
