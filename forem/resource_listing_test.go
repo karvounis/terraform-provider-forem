@@ -15,7 +15,7 @@ import (
 func TestAccListing_draft(t *testing.T) {
 	gofakeit.Seed(time.Now().UnixNano())
 	resourceName := "forem_listing.test"
-	lbc := getListingBodySchemaToPublish(dev.Draft)
+	lbc := getListingBodySchemaToPublish(dev.ActionDraft)
 	resource.Test(t, resource.TestCase{
 		PreCheck:  func() { testAccPreCheck(t) },
 		Providers: testAccProviders,
@@ -29,7 +29,7 @@ func TestAccListing_draft(t *testing.T) {
 					resource.TestCheckResourceAttr(resourceName, "category", string(lbc.Listing.Category)),
 					resource.TestCheckResourceAttr(resourceName, "published", "false"),
 					resource.TestCheckResourceAttr(resourceName, "contact_via_connect", "false"),
-					resource.TestCheckResourceAttr(resourceName, "action", string(dev.Draft)),
+					resource.TestCheckResourceAttr(resourceName, "action", string(dev.ActionDraft)),
 					resource.TestCheckResourceAttr(resourceName, "tags.#", strconv.Itoa(len(lbc.Listing.Tags))),
 					resource.TestCheckNoResourceAttr(resourceName, "expires_at"),
 					resource.TestCheckNoResourceAttr(resourceName, "location"),

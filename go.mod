@@ -6,7 +6,7 @@ require (
 	github.com/brianvoe/gofakeit/v6 v6.15.0
 	github.com/hashicorp/terraform-plugin-log v0.2.0
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.10.1
-	github.com/karvounis/dev-client-go v1.1.3
+	github.com/karvounis/dev-client-go v1.2.0
 )
 
 require (

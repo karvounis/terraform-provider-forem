@@ -17,7 +17,7 @@ const (
 )
 
 var (
-	allowedListingActions    = []string{"draft", string(dev.Bump), string(dev.Publish), string(dev.Unpublish)}
+	allowedListingActions    = []string{string(dev.ActionDraft), string(dev.ActionBump), string(dev.ActionPublish), string(dev.ActionUnpublish)}
 	allowedListingCategories = []string{
 		string(dev.ListingCategoryCfp),
 		string(dev.ListingCategoryForhire),
@@ -190,6 +190,46 @@ func resourceListingCreate(ctx context.Context, d *schema.ResourceData, meta int
 }
 
 func resourceListingUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	client := meta.(*dev.Client)
+
+	var lbc dev.ListingBodySchema
+
+	if d.HasChange("title") {
+		lbc.Listing.Title = d.Get("title").(string)
+	}
+	if d.HasChange("body_markdown") {
+		lbc.Listing.BodyMarkdown = d.Get("body_markdown").(string)
+	}
+	if d.HasChange("category") {
+		lbc.Listing.Category = dev.ListingCategory(d.Get("category").(string))
+	}
+	if d.HasChange("expires_at") {
+		lbc.Listing.ExpiresAt = d.Get("expires_at").(string)
+	}
+	if d.HasChange("contact_via_connect") {
+		lbc.Listing.ContactViaConnect = d.Get("contact_via_connect").(bool)
+	}
+	if d.HasChange("location") {
+		lbc.Listing.Location = d.Get("location").(string)
+	}
+	if d.HasChange("action") {
+		lbc.Listing.Action = dev.Action(d.Get("action").(string))
+	}
+	if d.HasChange("tags") {
+		if v, ok := d.GetOk("tags"); ok {
+			tags := []string{}
+			for _, t := range v.([]interface{}) {
+				tags = append(tags, t.(string))
+			}
+			lbc.Listing.Tags = tags
+		}
+	}
+
+	_, err := client.UpdateListing(d.Id(), lbc, nil)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+
 	return resourceListingRead(ctx, d, meta)
 }
 
