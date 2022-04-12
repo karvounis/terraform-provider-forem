@@ -17,8 +17,20 @@ const (
 )
 
 var (
-	allowedListingCategories = []string{"cfp", "forhire", "collabs", "education", "jobs", "mentors", "products", "mentees", "forsale", "events", "misc"}
-	allowedListingActions    = []string{"draft", "bump", "publish", "unpublish"}
+	allowedListingActions    = []string{"draft", string(dev.Bump), string(dev.Publish), string(dev.Unpublish)}
+	allowedListingCategories = []string{
+		string(dev.ListingCategoryCfp),
+		string(dev.ListingCategoryForhire),
+		string(dev.ListingCategoryCollabs),
+		string(dev.ListingCategoryEducation),
+		string(dev.ListingCategoryJobs),
+		string(dev.ListingCategoryMentors),
+		string(dev.ListingCategoryProducts),
+		string(dev.ListingCategoryMentees),
+		string(dev.ListingCategoryForsale),
+		string(dev.ListingCategoryEvents),
+		string(dev.ListingCategoryMisc),
+	}
 )
 
 func resourceListing() *schema.Resource {
@@ -170,7 +182,7 @@ func resourceListingCreate(ctx context.Context, d *schema.ResourceData, meta int
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	tflog.Debug(ctx, fmt.Sprintf("Created listing ID: `%d`", resp.ID))
+	tflog.Debug(ctx, fmt.Sprintf("Created listing with ID: `%d`", resp.ID))
 
 	d.SetId(strconv.Itoa(int(resp.ID)))
 
