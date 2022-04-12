@@ -34,9 +34,9 @@ data "forem_article" "example_username_slug" {
 
 ### Optional
 
-- `id` (String) ID of the article.
-- `slug` (String) Slug of the article.
-- `username` (String) User or organization username.
+- `id` (String) ID of the article. At least one of the following has to be added: `id, username, slug`.
+- `slug` (String) Slug of the article. At least one of the following has to be added: `id, username, slug`. Required to be set with the following: `username`.
+- `username` (String) User or organization username. At least one of the following has to be added: `id, username, slug`. Required to be set with the following: `slug`.
 
 ### Read-Only
 

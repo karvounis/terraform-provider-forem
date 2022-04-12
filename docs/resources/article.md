@@ -91,7 +91,7 @@ resource "forem_article" "example_full" {
 - `organization_id` (Number) Only users belonging to an organization can assign the article to it.
 - `published` (Boolean) Set to `true` to create a published article. Defaults to `false`.
 - `series` (String) Article series name. All articles belonging to the same series need to have the same name in this parameter.
-- `tags` (List of String) List of tags related to the article.
+- `tags` (List of String) List of tags related to the article. Maximum items: `4`.
 
 ### Read-Only
 

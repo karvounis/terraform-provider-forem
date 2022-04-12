@@ -24,6 +24,21 @@ func init() {
 		if s.Deprecated != "" {
 			desc += " " + s.Deprecated
 		}
+		if len(s.AtLeastOneOf) > 0 {
+			desc += fmt.Sprintf(" At least one of the following has to be added: `%s`.", strings.Join(s.AtLeastOneOf, ", "))
+		}
+		if len(s.ConflictsWith) > 0 {
+			desc += fmt.Sprintf(" Conflicts with the following: `%s`.", strings.Join(s.ConflictsWith, ", "))
+		}
+		if len(s.RequiredWith) > 0 {
+			desc += fmt.Sprintf(" Required to be set with the following: `%s`.", strings.Join(s.RequiredWith, ", "))
+		}
+		if s.MinItems > 0 {
+			desc += fmt.Sprintf(" Minimum items: `%d`.", s.MinItems)
+		}
+		if s.MaxItems > 0 {
+			desc += fmt.Sprintf(" Maximum items: `%d`.", s.MaxItems)
+		}
 		return strings.TrimSpace(desc)
 	}
 }

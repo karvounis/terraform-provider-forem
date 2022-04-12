@@ -35,7 +35,7 @@ description: |-
 - `expires_at` (String) Date and time of expiration.
 - `location` (String) Geographical area or city for the listing.
 - `organization_id` (Number) The id of the organization the user is creating the listing for. Only users belonging to an organization can assign the listing to it.
-- `tags` (List of String) List of tags related to the listing.
+- `tags` (List of String) List of tags related to the listing. Maximum items: `8`.
 
 ### Read-Only
 
