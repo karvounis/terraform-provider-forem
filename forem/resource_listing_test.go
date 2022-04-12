@@ -14,28 +14,23 @@ import (
 
 func TestAccListing_draft(t *testing.T) {
 	gofakeit.Seed(time.Now().UnixNano())
-
 	resourceName := "forem_listing.test"
-	title := gofakeit.HipsterSentence(2)
-	bodyMarkdown := gofakeit.HipsterParagraph(2, 3, 5, "\n")
-	category := gofakeit.RandomString([]string{string(dev.ListingCategoryCfp), string(dev.ListingCategoryEvents), string(dev.ListingCategoryMisc)})
-	tags := []string{gofakeit.Word(), gofakeit.Word(), gofakeit.Word()}
-
+	lbc := getListingBodySchemaToPublish(dev.Draft)
 	resource.Test(t, resource.TestCase{
 		PreCheck:  func() { testAccPreCheck(t) },
 		Providers: testAccProviders,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccListingDraft(title, bodyMarkdown, category, tags),
+				Config: testAccListingDraft(lbc),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttrSet(resourceName, "id"),
-					resource.TestCheckResourceAttr(resourceName, "title", title),
-					resource.TestCheckResourceAttr(resourceName, "body_markdown", bodyMarkdown),
-					resource.TestCheckResourceAttr(resourceName, "category", category),
+					resource.TestCheckResourceAttr(resourceName, "title", lbc.Listing.Title),
+					resource.TestCheckResourceAttr(resourceName, "body_markdown", lbc.Listing.BodyMarkdown),
+					resource.TestCheckResourceAttr(resourceName, "category", string(lbc.Listing.Category)),
 					resource.TestCheckResourceAttr(resourceName, "published", "false"),
 					resource.TestCheckResourceAttr(resourceName, "contact_via_connect", "false"),
-					resource.TestCheckResourceAttr(resourceName, "action", "draft"),
-					resource.TestCheckResourceAttr(resourceName, "tags.#", strconv.Itoa(len(tags))),
+					resource.TestCheckResourceAttr(resourceName, "action", string(dev.Draft)),
+					resource.TestCheckResourceAttr(resourceName, "tags.#", strconv.Itoa(len(lbc.Listing.Tags))),
 					resource.TestCheckNoResourceAttr(resourceName, "expires_at"),
 					resource.TestCheckNoResourceAttr(resourceName, "location"),
 					resource.TestCheckResourceAttrSet(resourceName, "user.username"),
@@ -47,10 +42,8 @@ func TestAccListing_draft(t *testing.T) {
 
 func TestAccListing_publish(t *testing.T) {
 	gofakeit.Seed(time.Now().UnixNano())
-
 	resourceName := "forem_listing.test"
-
-	lbc := getListingBodySchemaToPublish()
+	lbc := getListingBodySchemaToPublish(dev.Action(""))
 	resource.Test(t, resource.TestCase{
 		PreCheck:  func() { testAccPreCheck(t) },
 		Providers: testAccProviders,
@@ -75,16 +68,22 @@ func TestAccListing_publish(t *testing.T) {
 	})
 }
 
-func testAccListingDraft(title, bodyMarkdown, category string, tags []string) string {
+func testAccListingDraft(lbc dev.ListingBodySchema) string {
 	return fmt.Sprintf(`
 resource "forem_listing" "test" {
 	title         = %q
 	body_markdown = %q
 	category      = %q
-	action        = "draft"
+	action        = %q
 
 	tags = %s
-}`, title, bodyMarkdown, category, strings.Join(strings.Split(fmt.Sprintf("%q\n", tags), " "), ", "))
+}`,
+		lbc.Listing.Title,
+		lbc.Listing.BodyMarkdown,
+		lbc.Listing.Category,
+		lbc.Listing.Action,
+		strings.Join(strings.Split(fmt.Sprintf("%q\n", lbc.Listing.Tags), " "), ", "),
+	)
 }
 
 func testAccListingPublish(lbc dev.ListingBodySchema) string {
@@ -109,7 +108,7 @@ resource "forem_listing" "test" {
 	)
 }
 
-func getListingBodySchemaToPublish() dev.ListingBodySchema {
+func getListingBodySchemaToPublish(action dev.Action) dev.ListingBodySchema {
 	return dev.ListingBodySchema{
 		Listing: struct {
 			Title             string              `json:"title"`
@@ -130,6 +129,7 @@ func getListingBodySchemaToPublish() dev.ListingBodySchema {
 			ExpiresAt:         gofakeit.DateRange(time.Now(), time.Now().AddDate(0, 0, gofakeit.IntRange(1, 25))).Format("2006-01-02"),
 			ContactViaConnect: gofakeit.Bool(),
 			Location:          gofakeit.City(),
+			Action:            action,
 		},
 	}
 }
