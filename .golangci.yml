@@ -1,19 +1,37 @@
 linters:
   disable-all: true
   enable:
+    - asciicheck
+    - bodyclose
+    - contextcheck
     - deadcode
-    - gofmt
+    - durationcheck
+    - errname
     - gomnd
     - gosimple
+    - govet
     - ineffassign
     - makezero
     - misspell
     - nakedret
     - nilerr
+    - noctx
     - nolintlint
+    - revive
     - staticcheck
     - structcheck
+    - typecheck
     - unconvert
     - unparam
+    - unused
     - varcheck
     - vet
+    - wastedassign
+linters-settings:
+  revive:
+    ignore-generated-header: true
+    severity: warning
+    rules:
+      - name: atomic
+      - name: var-naming
+        disabled: true
