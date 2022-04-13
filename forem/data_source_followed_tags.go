@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	FormatIntBase = 10
+	formatIntBase = 10
 )
 
 func dataSourceFollowedTags() *schema.Resource {
@@ -71,7 +71,7 @@ func dataSourceFollowedTagsRead(ctx context.Context, d *schema.ResourceData, met
 	}
 
 	d.Set("tags", ftags)
-	d.SetId(strconv.FormatInt(time.Now().Unix(), FormatIntBase))
+	d.SetId(strconv.FormatInt(time.Now().Unix(), formatIntBase))
 
 	return nil
 }

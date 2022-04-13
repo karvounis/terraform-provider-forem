@@ -18,18 +18,18 @@ func TestAccArticle_basic(t *testing.T) {
 
 	resourceName := "forem_article.test"
 	title := gofakeit.SentenceSimple()
-	body_markdown := gofakeit.HipsterParagraph(2, 5, 10, "\n")
+	bodyMarkdown := gofakeit.HipsterParagraph(2, 5, 10, "\n")
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:  func() { testAccPreCheck(t) },
 		Providers: testAccProviders,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccArticleBasicConfig(title, body_markdown),
+				Config: testAccArticleBasicConfig(title, bodyMarkdown),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttrSet(resourceName, "id"),
 					resource.TestCheckResourceAttr(resourceName, "title", title),
-					resource.TestCheckResourceAttr(resourceName, "body_markdown", body_markdown),
+					resource.TestCheckResourceAttr(resourceName, "body_markdown", bodyMarkdown),
 					resource.TestCheckResourceAttr(resourceName, "published", "false"),
 					resource.TestCheckResourceAttr(resourceName, "tags.#", "0"),
 					resource.TestCheckResourceAttrSet(resourceName, "slug"),
@@ -46,7 +46,7 @@ func TestAccArticle_full(t *testing.T) {
 
 	title := gofakeit.HipsterSentence(5)
 	published := gofakeit.Bool()
-	canonical_url := gofakeit.URL()
+	canonicalURL := gofakeit.URL()
 	tags := []string{gofakeit.Word(), gofakeit.Word(), gofakeit.Word()}
 	series := gofakeit.LoremIpsumSentence(3)
 	article := &dev.Article{
@@ -54,7 +54,7 @@ func TestAccArticle_full(t *testing.T) {
 		BodyMarkdown: gofakeit.HipsterParagraph(2, 5, 10, "\n"),
 		Published:    published,
 		Description:  gofakeit.LoremIpsumSentence(5),
-		CanonicalURL: canonical_url,
+		CanonicalURL: canonicalURL,
 		CoverImage:   gofakeit.URL(),
 		TagList:      tags,
 	}
@@ -64,7 +64,7 @@ func TestAccArticle_full(t *testing.T) {
 		BodyMarkdown: gofakeit.HipsterParagraph(2, 5, 10, "\n"),
 		Published:    published,
 		Description:  gofakeit.LoremIpsumSentence(5),
-		CanonicalURL: canonical_url,
+		CanonicalURL: canonicalURL,
 		CoverImage:   gofakeit.URL(),
 		TagList:      append(tags, gofakeit.Word()),
 	}
@@ -135,19 +135,19 @@ func TestAccArticle_tooManyTags(t *testing.T) {
 	})
 }
 
-func testAccArticleBasicConfig(title, body_markdown string) string {
+func testAccArticleBasicConfig(title, bodyMarkdown string) string {
 	return fmt.Sprintf(`
 resource "forem_article" "test" {
-	title         = %[1]q
-	body_markdown = %[2]q
-	}`, title, body_markdown)
+	title         = %q
+	body_markdown = %q
+}`, title, bodyMarkdown)
 }
 
 func testAccArticleFullConfig(article *dev.Article, series string) string {
 	return fmt.Sprintf(`
 resource "forem_article" "test" {
-	title         = %[1]q
-	body_markdown = %[2]q
+	title         = %q
+	body_markdown = %q
 	published     = %v
 	description   = %q
 	canonical_url = %q

@@ -13,8 +13,8 @@ import (
 )
 
 const (
-	MaxArticleTags      = 4
-	ReadArticlesPerPage = 25
+	maxArticleTags      = 4
+	readArticlesPerPage = 25
 )
 
 func resourceArticle() *schema.Resource {
@@ -55,7 +55,7 @@ func resourceArticle() *schema.Resource {
 				Description: "List of tags related to the article.",
 				Type:        schema.TypeList,
 				Optional:    true,
-				MaxItems:    MaxArticleTags,
+				MaxItems:    maxArticleTags,
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
 			"published": {
@@ -166,6 +166,7 @@ func resourceArticle() *schema.Resource {
 	}
 }
 
+// TODO: Waiting for API to allow deletion of an article
 func resourceArticleDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	return nil
 }
@@ -243,12 +244,11 @@ func resourceArticleUpdate(ctx context.Context, d *schema.ResourceData, meta int
 			ab.Article.CanonicalURL = v.(string)
 		}
 		if v, ok := d.GetOk("tags"); ok {
-			tags := v.([]interface{})
-			tagsList := []string{}
-			for _, t := range tags {
-				tagsList = append(tagsList, t.(string))
+			tags := []string{}
+			for _, t := range v.([]interface{}) {
+				tags = append(tags, t.(string))
 			}
-			ab.Article.Tags = tagsList
+			ab.Article.Tags = tags
 		}
 		if v, ok := d.GetOk("organization_id"); ok {
 			ab.Article.OrganizationID = v.(int32)
@@ -266,10 +266,10 @@ func resourceArticleRead(ctx context.Context, d *schema.ResourceData, meta inter
 	client := meta.(*dev.Client)
 
 	id := d.Get("id").(string)
-	tflog.Debug(ctx, fmt.Sprintf("Getting article: %s", id))
+	tflog.Debug(ctx, fmt.Sprintf("Getting article with ID: %s", id))
 
 	page := int32(1)
-	perPage := int32(ReadArticlesPerPage)
+	perPage := int32(readArticlesPerPage)
 	missing := true
 	var article dev.Article
 
@@ -285,7 +285,7 @@ func resourceArticleRead(ctx context.Context, d *schema.ResourceData, meta inter
 
 		for _, v := range articleResp {
 			if strconv.Itoa(int(v.ID)) == id {
-				tflog.Debug(ctx, fmt.Sprintf("Found article: %s", id))
+				tflog.Debug(ctx, fmt.Sprintf("Found article with ID: %s", id))
 				missing = false
 				article = v
 				break
