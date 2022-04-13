@@ -121,17 +121,13 @@ func resourceListing() *schema.Resource {
 				Description: "User object of the listing.",
 				Type:        schema.TypeMap,
 				Computed:    true,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
-				},
+				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
 			"organization": {
 				Description: "Organization object of the listing.",
 				Type:        schema.TypeMap,
 				Computed:    true,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
-				},
+				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
 		},
 	}

@@ -244,12 +244,11 @@ func resourceArticleUpdate(ctx context.Context, d *schema.ResourceData, meta int
 			ab.Article.CanonicalURL = v.(string)
 		}
 		if v, ok := d.GetOk("tags"); ok {
-			tags := v.([]interface{})
-			tagsList := []string{}
-			for _, t := range tags {
-				tagsList = append(tagsList, t.(string))
+			tags := []string{}
+			for _, t := range v.([]interface{}) {
+				tags = append(tags, t.(string))
 			}
-			ab.Article.Tags = tagsList
+			ab.Article.Tags = tags
 		}
 		if v, ok := d.GetOk("organization_id"); ok {
 			ab.Article.OrganizationID = v.(int32)
