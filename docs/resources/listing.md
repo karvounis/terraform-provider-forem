@@ -31,7 +31,7 @@ description: |-
 ### Optional
 
 - `action` (String) Set it to `draft` to create an unpublished listing.
-- `contact_via_connect` (Boolean) True if users are allowed to contact the listing's owner via DEV connect, false otherwise. Defaults to `false`.
+- `contact_via_connect` (Boolean) True if users are allowed to contact the listing's owner via DEV connect, false otherwise. Defaults to: `false`.
 - `expires_at` (String) Date and time of expiration.
 - `location` (String) Geographical area or city for the listing.
 - `organization_id` (Number) The id of the organization the user is creating the listing for. Only users belonging to an organization can assign the listing to it.
@@ -44,6 +44,7 @@ description: |-
 - `organization` (Map of String) Organization object of the listing.
 - `published` (Boolean) Whether the listing is published or not.
 - `slug` (String) Slug of the listing.
+- `updated_at` (String) When the listing was updated.
 - `user` (Map of String) User object of the listing.
 
 

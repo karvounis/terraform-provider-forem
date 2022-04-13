@@ -12,6 +12,9 @@ import (
 
 const (
 	devToBaseURL = "https://dev.to/api"
+
+	envForemAPIKey = "FOREM_API_KEY"
+	envForemHost   = "FOREM_HOST"
 )
 
 func init() {
@@ -19,7 +22,7 @@ func init() {
 	schema.SchemaDescriptionBuilder = func(s *schema.Schema) string {
 		desc := s.Description
 		if s.Default != nil {
-			desc += fmt.Sprintf(" Defaults to `%v`.", s.Default)
+			desc += fmt.Sprintf(" Defaults to: `%v`.", s.Default)
 		}
 		if s.Deprecated != "" {
 			desc += " " + s.Deprecated
@@ -49,16 +52,16 @@ func Provider() *schema.Provider {
 		ConfigureContextFunc: providerConfigure,
 		Schema: map[string]*schema.Schema{
 			"api_key": {
-				Description: "API key to be able to communicate with the FOREM API. Can be specified with the `FOREM_API_KEY` environment variable.",
+				Description: fmt.Sprintf("API key to be able to communicate with the FOREM API. Environment variable: `%s`.", envForemAPIKey),
 				Type:        schema.TypeString,
 				Required:    true,
-				DefaultFunc: schema.EnvDefaultFunc("FOREM_API_KEY", nil),
+				DefaultFunc: schema.EnvDefaultFunc(envForemAPIKey, nil),
 			},
 			"host": {
-				Description: "Host of the FOREM API. You can specify the `dev.to` or any other Forem installation. Can be specified with the `FOREM_HOST` environment variable. Default: `https://dev.to/api`.",
+				Description: fmt.Sprintf("Host of the FOREM API. Environment variable: `%s`. Defaults to: `%s`.", envForemHost, devToBaseURL),
 				Type:        schema.TypeString,
 				Required:    true,
-				DefaultFunc: schema.EnvDefaultFunc("FOREM_HOST", devToBaseURL),
+				DefaultFunc: schema.EnvDefaultFunc(envForemHost, devToBaseURL),
 			},
 		},
 		ResourcesMap: map[string]*schema.Resource{

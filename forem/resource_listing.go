@@ -3,7 +3,10 @@ package forem
 import (
 	"context"
 	"fmt"
+	"regexp"
 	"strconv"
+	"terraform-provider-forem/internal/listing"
+	"time"
 
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -13,7 +16,8 @@ import (
 )
 
 const (
-	maxListingTags = 8
+	maxListingTags              = 8
+	validListingExpiresAtFormat = `\d{2}\/\d{2}\/\d{4}`
 )
 
 var (
@@ -82,9 +86,10 @@ func resourceListing() *schema.Resource {
 				Default:     false,
 			},
 			"expires_at": {
-				Description: "Date and time of expiration.",
-				Type:        schema.TypeString,
-				Optional:    true,
+				Description:  "Date and time of expiration.",
+				Type:         schema.TypeString,
+				Optional:     true,
+				ValidateFunc: validation.StringMatch(regexp.MustCompile(validListingExpiresAtFormat), fmt.Sprintf("expected to be of the format `%s`", validListingExpiresAtFormat)),
 			},
 			"location": {
 				Description: "Geographical area or city for the listing.",
@@ -112,11 +117,6 @@ func resourceListing() *schema.Resource {
 				Type:        schema.TypeBool,
 				Computed:    true,
 			},
-			"created_at": {
-				Description: "When the listing was created.",
-				Type:        schema.TypeString,
-				Computed:    true,
-			},
 			"user": {
 				Description: "User object of the listing.",
 				Type:        schema.TypeMap,
@@ -128,6 +128,16 @@ func resourceListing() *schema.Resource {
 				Type:        schema.TypeMap,
 				Computed:    true,
 				Elem:        &schema.Schema{Type: schema.TypeString},
+			},
+			"created_at": {
+				Description: "When the listing was created.",
+				Type:        schema.TypeString,
+				Computed:    true,
+			},
+			"updated_at": {
+				Description: "When the listing was updated.",
+				Type:        schema.TypeString,
+				Computed:    true,
 			},
 		},
 	}
@@ -141,46 +151,16 @@ func resourceListingDelete(ctx context.Context, d *schema.ResourceData, meta int
 func resourceListingCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(*dev.Client)
 
-	title := d.Get("title").(string)
-	category := dev.ListingCategory(d.Get("category").(string))
-
-	var lbSchema dev.ListingBodySchema
-	lbSchema.Listing.Title = title
-	lbSchema.Listing.BodyMarkdown = d.Get("body_markdown").(string)
-	lbSchema.Listing.Category = category
-
-	if v, ok := d.GetOk("tags"); ok {
-		tags := []string{}
-		for _, t := range v.([]interface{}) {
-			tags = append(tags, t.(string))
-		}
-		lbSchema.Listing.Tags = tags
-	}
-
-	if v, ok := d.GetOk("contact_via_connect"); ok {
-		lbSchema.Listing.ContactViaConnect = v.(bool)
-	}
-	if v, ok := d.GetOk("expires_at"); ok {
-		lbSchema.Listing.ExpiresAt = v.(string)
-	}
-	if v, ok := d.GetOk("location"); ok {
-		lbSchema.Listing.Location = v.(string)
-	}
-	if v, ok := d.GetOk("action"); ok {
-		lbSchema.Listing.Action = dev.Action(v.(string))
-	}
-	if v, ok := d.GetOk("organization_id"); ok {
-		lbSchema.Listing.OrganizationID = v.(int64)
-	}
-
-	tflog.Debug(ctx, fmt.Sprintf("Creating listing with title `%s` and category `%s`", title, category))
-	resp, err := client.CreateListing(lbSchema, nil)
+	lbc := listing.GetListingBodySchemaFromResourceData(d)
+	tflog.Debug(ctx, fmt.Sprintf("Creating listing with title `%s` and category `%s`", lbc.Listing.Title, lbc.Listing.Category))
+	resp, err := client.CreateListing(lbc, nil)
 	if err != nil {
 		return diag.FromErr(err)
 	}
 	tflog.Debug(ctx, fmt.Sprintf("Created listing with ID: `%d`", resp.ID))
 
 	d.SetId(strconv.Itoa(int(resp.ID)))
+	d.Set("created_at", time.Now().Format(time.RFC3339))
 
 	return resourceListingRead(ctx, d, meta)
 }
@@ -188,43 +168,14 @@ func resourceListingCreate(ctx context.Context, d *schema.ResourceData, meta int
 func resourceListingUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(*dev.Client)
 
-	var lbc dev.ListingBodySchema
-
-	if d.HasChange("title") {
-		lbc.Listing.Title = d.Get("title").(string)
-	}
-	if d.HasChange("body_markdown") {
-		lbc.Listing.BodyMarkdown = d.Get("body_markdown").(string)
-	}
-	if d.HasChange("category") {
-		lbc.Listing.Category = dev.ListingCategory(d.Get("category").(string))
-	}
-	if d.HasChange("expires_at") {
-		lbc.Listing.ExpiresAt = d.Get("expires_at").(string)
-	}
-	if d.HasChange("contact_via_connect") {
-		lbc.Listing.ContactViaConnect = d.Get("contact_via_connect").(bool)
-	}
-	if d.HasChange("location") {
-		lbc.Listing.Location = d.Get("location").(string)
-	}
-	if d.HasChange("action") {
-		lbc.Listing.Action = dev.Action(d.Get("action").(string))
-	}
-	if d.HasChange("tags") {
-		if v, ok := d.GetOk("tags"); ok {
-			tags := []string{}
-			for _, t := range v.([]interface{}) {
-				tags = append(tags, t.(string))
-			}
-			lbc.Listing.Tags = tags
-		}
-	}
-
-	_, err := client.UpdateListing(d.Id(), lbc, nil)
-	if err != nil {
+	tflog.Debug(ctx, fmt.Sprintf("Updating listing with ID: `%s`", d.Id()))
+	lbc := listing.GetListingBodySchemaFromResourceData(d)
+	if _, err := client.UpdateListing(d.Id(), lbc, nil); err != nil {
 		return diag.FromErr(err)
 	}
+	tflog.Debug(ctx, fmt.Sprintf("Updated listing with ID: `%s`", d.Id()))
+
+	d.Set("updated_at", time.Now().Format(time.RFC3339))
 
 	return resourceListingRead(ctx, d, meta)
 }

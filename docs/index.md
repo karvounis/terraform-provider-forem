@@ -25,5 +25,5 @@ provider "forem" {
 
 ### Optional
 
-- `api_key` (String) API key to be able to communicate with the FOREM API. Can be specified with the `FOREM_API_KEY` environment variable.
-- `host` (String) Host of the FOREM API. You can specify the `dev.to` or any other Forem installation. Can be specified with the `FOREM_HOST` environment variable. Default: `https://dev.to/api`.
+- `api_key` (String) API key to be able to communicate with the FOREM API. Environment variable: `FOREM_API_KEY`.
+- `host` (String) Host of the FOREM API. Environment variable: `FOREM_HOST`. Defaults to: `https://dev.to/api`.
