@@ -266,7 +266,7 @@ func resourceArticleRead(ctx context.Context, d *schema.ResourceData, meta inter
 	client := meta.(*dev.Client)
 
 	id := d.Get("id").(string)
-	tflog.Debug(ctx, fmt.Sprintf("Getting article: %s", id))
+	tflog.Debug(ctx, fmt.Sprintf("Getting article with ID: %s", id))
 
 	page := int32(1)
 	perPage := int32(readArticlesPerPage)
@@ -285,7 +285,7 @@ func resourceArticleRead(ctx context.Context, d *schema.ResourceData, meta inter
 
 		for _, v := range articleResp {
 			if strconv.Itoa(int(v.ID)) == id {
-				tflog.Debug(ctx, fmt.Sprintf("Found article: %s", id))
+				tflog.Debug(ctx, fmt.Sprintf("Found article with ID: %s", id))
 				missing = false
 				article = v
 				break

@@ -157,7 +157,7 @@ func resourceListingCreate(ctx context.Context, d *schema.ResourceData, meta int
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	tflog.Debug(ctx, fmt.Sprintf("Created listing with ID: `%d`", resp.ID))
+	tflog.Debug(ctx, fmt.Sprintf("Created listing with ID: %d", resp.ID))
 
 	d.SetId(strconv.Itoa(int(resp.ID)))
 	d.Set("created_at", time.Now().Format(time.RFC3339))
@@ -168,12 +168,12 @@ func resourceListingCreate(ctx context.Context, d *schema.ResourceData, meta int
 func resourceListingUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(*dev.Client)
 
-	tflog.Debug(ctx, fmt.Sprintf("Updating listing with ID: `%s`", d.Id()))
+	tflog.Debug(ctx, fmt.Sprintf("Updating listing with ID: %s", d.Id()))
 	lbc := listing.GetListingBodySchemaFromResourceData(d)
 	if _, err := client.UpdateListing(d.Id(), lbc, nil); err != nil {
 		return diag.FromErr(err)
 	}
-	tflog.Debug(ctx, fmt.Sprintf("Updated listing with ID: `%s`", d.Id()))
+	tflog.Debug(ctx, fmt.Sprintf("Updated listing with ID: %s", d.Id()))
 
 	d.Set("updated_at", time.Now().Format(time.RFC3339))
 

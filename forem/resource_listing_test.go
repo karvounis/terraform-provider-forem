@@ -68,6 +68,57 @@ func TestAccListing_publish(t *testing.T) {
 	})
 }
 
+func TestAccListing_publishAndEdit(t *testing.T) {
+	gofakeit.Seed(time.Now().UnixNano())
+	resourceName := "forem_listing.test"
+	lbc := getListingBodySchemaToPublish(dev.Action(""))
+
+	lbcEdit := lbc
+	lbcEdit.Listing.Action = dev.ActionUnpublish
+	lbcEdit.Listing.Tags = append(lbcEdit.Listing.Tags, gofakeit.Word())
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:  func() { testAccPreCheck(t) },
+		Providers: testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccListingPublish(lbc),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttrSet(resourceName, "id"),
+					resource.TestCheckResourceAttr(resourceName, "title", lbc.Listing.Title),
+					resource.TestCheckResourceAttr(resourceName, "body_markdown", lbc.Listing.BodyMarkdown),
+					resource.TestCheckResourceAttr(resourceName, "category", string(lbc.Listing.Category)),
+					resource.TestCheckResourceAttr(resourceName, "published", "true"),
+					resource.TestCheckResourceAttr(resourceName, "contact_via_connect", strconv.FormatBool(lbc.Listing.ContactViaConnect)),
+					resource.TestCheckResourceAttr(resourceName, "tags.#", strconv.Itoa(len(lbc.Listing.Tags))),
+					resource.TestCheckResourceAttr(resourceName, "location", lbc.Listing.Location),
+					resource.TestCheckResourceAttr(resourceName, "expires_at", lbc.Listing.ExpiresAt),
+					resource.TestCheckResourceAttrSet(resourceName, "user.username"),
+					resource.TestCheckNoResourceAttr(resourceName, "action"),
+					resource.TestCheckResourceAttrSet(resourceName, "created_at"),
+					resource.TestCheckNoResourceAttr(resourceName, "updated_at"),
+				),
+			},
+			{
+				Config: testAccListingPublish(lbcEdit),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(resourceName, "title", lbcEdit.Listing.Title),
+					resource.TestCheckResourceAttr(resourceName, "body_markdown", lbcEdit.Listing.BodyMarkdown),
+					resource.TestCheckResourceAttr(resourceName, "category", string(lbcEdit.Listing.Category)),
+					resource.TestCheckResourceAttr(resourceName, "published", "true"),
+					resource.TestCheckResourceAttr(resourceName, "contact_via_connect", strconv.FormatBool(lbcEdit.Listing.ContactViaConnect)),
+					resource.TestCheckResourceAttr(resourceName, "tags.#", strconv.Itoa(len(lbcEdit.Listing.Tags))),
+					resource.TestCheckResourceAttr(resourceName, "location", lbcEdit.Listing.Location),
+					resource.TestCheckResourceAttr(resourceName, "expires_at", lbcEdit.Listing.ExpiresAt),
+					resource.TestCheckResourceAttrSet(resourceName, "user.username"),
+					resource.TestCheckResourceAttrSet(resourceName, "created_at"),
+					resource.TestCheckResourceAttrSet(resourceName, "updated_at"),
+				),
+			},
+		},
+	})
+}
+
 func testAccListingDraft(lbc dev.ListingBodySchema) string {
 	return fmt.Sprintf(`
 resource "forem_listing" "test" {
@@ -126,7 +177,7 @@ func getListingBodySchemaToPublish(action dev.Action) dev.ListingBodySchema {
 			BodyMarkdown:      gofakeit.Paragraph(1, 2, 5, "\n"),
 			Category:          dev.ListingCategory(gofakeit.RandomString([]string{string(dev.ListingCategoryCfp), string(dev.ListingCategoryEvents), string(dev.ListingCategoryMisc)})),
 			Tags:              []string{gofakeit.Word(), gofakeit.Word(), gofakeit.Word()},
-			ExpiresAt:         gofakeit.DateRange(time.Now(), time.Now().AddDate(0, 0, gofakeit.IntRange(1, 25))).Format("2006-01-02"),
+			ExpiresAt:         gofakeit.DateRange(time.Now(), time.Now().AddDate(0, 0, gofakeit.IntRange(1, 10))).Format("02/01/2004"),
 			ContactViaConnect: gofakeit.Bool(),
 			Location:          gofakeit.City(),
 			Action:            action,
