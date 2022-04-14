@@ -9,7 +9,7 @@ description: |-
 
 The Forem provider provides resources to interact with a Forem API.
 
-In order to use this provider, you must first generate an API key under `settings/account`.
+In order to use this provider, you must first generate a Forem **API key** under `Settings -> Account`.
 
 ## Example Usage
 
