@@ -152,7 +152,7 @@ func resourceListingCreate(ctx context.Context, d *schema.ResourceData, meta int
 	client := meta.(*dev.Client)
 
 	lbc := listing.GetListingBodySchemaFromResourceData(d)
-	tflog.Debug(ctx, fmt.Sprintf("Creating listing with title `%s` and category `%s`", lbc.Listing.Title, lbc.Listing.Category))
+	tflog.Debug(ctx, fmt.Sprintf("Creating listing with title: `%s` and category: `%s`", lbc.Listing.Title, lbc.Listing.Category))
 	resp, err := client.CreateListing(lbc, nil)
 	if err != nil {
 		return diag.FromErr(err)

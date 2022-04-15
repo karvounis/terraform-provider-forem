@@ -96,6 +96,7 @@ resource "forem_article" "example_full" {
 ### Read-Only
 
 - `comments_count` (Number) Number of comments.
+- `created_at` (String) When the listing was created.
 - `flare_tag` (Map of String) Flare tag object of the article.
 - `id` (String) ID of the article.
 - `organization` (Map of String) Organization object of the article.
@@ -107,6 +108,7 @@ resource "forem_article" "example_full" {
 - `published_timestamp` (String) When the article was published.
 - `reading_time_minutes` (Number) Article reading time in minutes.
 - `slug` (String) Slug of the article.
+- `updated_at` (String) When the listing was updated.
 - `url` (String) Full article URL.
 - `user` (Map of String) User object of the article.
 

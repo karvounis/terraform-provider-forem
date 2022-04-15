@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"strconv"
+	"terraform-provider-forem/internal/article"
+	"time"
 
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -162,6 +164,16 @@ func resourceArticle() *schema.Resource {
 					Type: schema.TypeString,
 				},
 			},
+			"created_at": {
+				Description: "When the listing was created.",
+				Type:        schema.TypeString,
+				Computed:    true,
+			},
+			"updated_at": {
+				Description: "When the listing was updated.",
+				Type:        schema.TypeString,
+				Computed:    true,
+			},
 		},
 	}
 }
@@ -174,48 +186,17 @@ func resourceArticleDelete(ctx context.Context, d *schema.ResourceData, meta int
 func resourceArticleCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(*dev.Client)
 
-	title := d.Get("title").(string)
+	abc := article.GetArticleBodySchemaFromResourceData(d)
+	tflog.Debug(ctx, fmt.Sprintf("Creating article with title: `%s`", abc.Article.Title))
 
-	var ab dev.ArticleBodySchema
-	ab.Article.Title = title
-	ab.Article.BodyMarkdown = d.Get("body_markdown").(string)
-
-	if v, ok := d.GetOk("published"); ok {
-		ab.Article.Published = v.(bool)
-	}
-	if v, ok := d.GetOk("series"); ok {
-		ab.Article.Series = v.(string)
-	}
-	if v, ok := d.GetOk("cover_image"); ok {
-		ab.Article.MainImage = v.(string)
-	}
-	if v, ok := d.GetOk("canonical_url"); ok {
-		ab.Article.CanonicalURL = v.(string)
-	}
-	if v, ok := d.GetOk("description"); ok {
-		ab.Article.Description = v.(string)
-	}
-	if v, ok := d.GetOk("tags"); ok {
-		tags := v.([]interface{})
-		tagsList := []string{}
-		for _, t := range tags {
-			tagsList = append(tagsList, t.(string))
-		}
-		ab.Article.Tags = tagsList
-	}
-	if v, ok := d.GetOk("organization_id"); ok {
-		ab.Article.OrganizationID = v.(int32)
-	}
-
-	tflog.Debug(ctx, fmt.Sprintf("Creating article with title `%s`", title))
-
-	resp, err := client.CreateArticle(ab, nil)
+	resp, err := client.CreateArticle(abc, nil)
 	if err != nil {
 		return diag.FromErr(err)
 	}
 	tflog.Debug(ctx, fmt.Sprintf("Created article ID: `%d`", resp.ID))
 
 	d.SetId(strconv.Itoa(int(resp.ID)))
+	d.Set("created_at", time.Now().Format(time.RFC3339))
 
 	return resourceArticleRead(ctx, d, meta)
 }
@@ -223,42 +204,15 @@ func resourceArticleCreate(ctx context.Context, d *schema.ResourceData, meta int
 func resourceArticleUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(*dev.Client)
 
-	if d.HasChanges("title", "body_markdown", "published", "series", "cover_image", "description", "tags", "organization_id", "canonical_url") {
-		var ab dev.ArticleBodySchema
-		ab.Article.Title = d.Get("title").(string)
-		ab.Article.BodyMarkdown = d.Get("body_markdown").(string)
-
-		if v, ok := d.GetOk("published"); ok {
-			ab.Article.Published = v.(bool)
-		}
-		if v, ok := d.GetOk("series"); ok {
-			ab.Article.Series = v.(string)
-		}
-		if v, ok := d.GetOk("cover_image"); ok {
-			ab.Article.MainImage = v.(string)
-		}
-		if v, ok := d.GetOk("description"); ok {
-			ab.Article.Description = v.(string)
-		}
-		if v, ok := d.GetOk("canonical_url"); ok {
-			ab.Article.CanonicalURL = v.(string)
-		}
-		if v, ok := d.GetOk("tags"); ok {
-			tags := []string{}
-			for _, t := range v.([]interface{}) {
-				tags = append(tags, t.(string))
-			}
-			ab.Article.Tags = tags
-		}
-		if v, ok := d.GetOk("organization_id"); ok {
-			ab.Article.OrganizationID = v.(int32)
-		}
-
-		_, err := client.UpdateArticle(d.Id(), ab, nil)
-		if err != nil {
-			return diag.FromErr(err)
-		}
+	tflog.Debug(ctx, fmt.Sprintf("Updating article with ID: %s", d.Id()))
+	abc := article.GetArticleBodySchemaFromResourceData(d)
+	if _, err := client.UpdateArticle(d.Id(), abc, nil); err != nil {
+		return diag.FromErr(err)
 	}
+	tflog.Debug(ctx, fmt.Sprintf("Updated listing with ID: %s", d.Id()))
+
+	d.Set("updated_at", time.Now().Format(time.RFC3339))
+
 	return resourceArticleRead(ctx, d, meta)
 }
 
