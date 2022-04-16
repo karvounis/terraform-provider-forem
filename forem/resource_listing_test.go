@@ -75,7 +75,7 @@ func TestAccListing_publishAndEdit(t *testing.T) {
 
 	lbcEdit := lbc
 	lbcEdit.Listing.Action = dev.ActionUnpublish
-	lbcEdit.Listing.Tags = append(lbcEdit.Listing.Tags, gofakeit.Word())
+	lbcEdit.Listing.Tags = append(lbcEdit.Listing.Tags, strings.ToLower(gofakeit.Word()))
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:  func() { testAccPreCheck(t) },
@@ -176,7 +176,7 @@ func getListingBodySchemaToPublish(action dev.Action) dev.ListingBodySchema {
 			Title:             gofakeit.Sentence(5),
 			BodyMarkdown:      gofakeit.Paragraph(1, 2, 5, "\n"),
 			Category:          dev.ListingCategory(gofakeit.RandomString([]string{string(dev.ListingCategoryCfp), string(dev.ListingCategoryEvents), string(dev.ListingCategoryMisc)})),
-			Tags:              []string{gofakeit.Word(), gofakeit.Word(), gofakeit.Word()},
+			Tags:              []string{strings.ToLower(gofakeit.Word()), strings.ToLower(gofakeit.Word()), strings.ToLower(gofakeit.Word())},
 			ExpiresAt:         gofakeit.DateRange(time.Now(), time.Now().AddDate(0, 0, gofakeit.IntRange(1, 10))).Format("02/01/2004"),
 			ContactViaConnect: gofakeit.Bool(),
 			Location:          gofakeit.City(),

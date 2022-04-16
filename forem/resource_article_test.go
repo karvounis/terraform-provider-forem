@@ -13,7 +13,7 @@ import (
 	"github.com/karvounis/dev-client-go"
 )
 
-func TestAccArticle_basic(t *testing.T) {
+func TestAccArticle_createDraft(t *testing.T) {
 	gofakeit.Seed(time.Now().UnixNano())
 
 	resourceName := "forem_article.test"
@@ -33,40 +33,50 @@ func TestAccArticle_basic(t *testing.T) {
 					resource.TestCheckResourceAttr(resourceName, "published", "false"),
 					resource.TestCheckResourceAttr(resourceName, "tags.#", "0"),
 					resource.TestCheckResourceAttrSet(resourceName, "slug"),
+					resource.TestCheckResourceAttrSet(resourceName, "canonical_url"),
 					resource.TestCheckResourceAttrSet(resourceName, "path"),
 					resource.TestCheckNoResourceAttr(resourceName, "series"),
+					resource.TestCheckResourceAttrSet(resourceName, "created_at"),
+					resource.TestCheckNoResourceAttr(resourceName, "updated_at"),
+					resource.TestCheckResourceAttrSet(resourceName, "user.username"),
+					resource.TestCheckResourceAttr(resourceName, "published_at", ""),
+					resource.TestCheckResourceAttr(resourceName, "published_timestamp", ""),
+					resource.TestCheckResourceAttr(resourceName, "comments_count", strconv.Itoa(0)),
+					resource.TestCheckResourceAttr(resourceName, "positive_reactions_count", strconv.Itoa(0)),
+					resource.TestCheckResourceAttr(resourceName, "public_reactions_count", strconv.Itoa(0)),
+					resource.TestCheckResourceAttr(resourceName, "page_views_count", strconv.Itoa(0)),
+					resource.TestCheckResourceAttrSet(resourceName, "reading_time_minutes"),
 				),
 			},
 		},
 	})
 }
 
-func TestAccArticle_full(t *testing.T) {
+func TestAccArticle_publishAndEdit(t *testing.T) {
 	gofakeit.Seed(time.Now().UnixNano())
 
-	title := gofakeit.HipsterSentence(5)
-	published := gofakeit.Bool()
-	canonicalURL := gofakeit.URL()
-	tags := []string{gofakeit.Word(), gofakeit.Word(), gofakeit.Word()}
+	tags := []string{strings.ToLower(gofakeit.Word()), strings.ToLower(gofakeit.Word()), strings.ToLower(gofakeit.Word())}
 	series := gofakeit.LoremIpsumSentence(3)
+	published := true
+
 	article := &dev.Article{
-		Title:        title,
+		Title:        gofakeit.HipsterSentence(5),
 		BodyMarkdown: gofakeit.HipsterParagraph(2, 5, 10, "\n"),
 		Published:    published,
-		Description:  gofakeit.LoremIpsumSentence(5),
-		CanonicalURL: canonicalURL,
+		Description:  gofakeit.LoremIpsumSentence(3),
+		CanonicalURL: gofakeit.URL(),
 		CoverImage:   gofakeit.URL(),
 		TagList:      tags,
 	}
 
 	articleUpd := &dev.Article{
-		Title:        title,
+		Title:        gofakeit.HipsterSentence(5),
 		BodyMarkdown: gofakeit.HipsterParagraph(2, 5, 10, "\n"),
 		Published:    published,
-		Description:  gofakeit.LoremIpsumSentence(5),
-		CanonicalURL: canonicalURL,
+		Description:  gofakeit.LoremIpsumSentence(3),
+		CanonicalURL: gofakeit.URL(),
 		CoverImage:   gofakeit.URL(),
-		TagList:      append(tags, gofakeit.Word()),
+		TagList:      append(tags, strings.ToLower(gofakeit.Word())),
 	}
 
 	resourceName := "forem_article.test"
@@ -89,6 +99,16 @@ func TestAccArticle_full(t *testing.T) {
 					resource.TestCheckResourceAttrSet(resourceName, "slug"),
 					resource.TestCheckResourceAttrSet(resourceName, "path"),
 					resource.TestCheckResourceAttr(resourceName, "series", series),
+					resource.TestCheckResourceAttrSet(resourceName, "created_at"),
+					resource.TestCheckNoResourceAttr(resourceName, "updated_at"),
+					resource.TestCheckResourceAttrSet(resourceName, "user.username"),
+					resource.TestCheckResourceAttrSet(resourceName, "published_at"),
+					resource.TestCheckResourceAttrSet(resourceName, "published_timestamp"),
+					resource.TestCheckResourceAttr(resourceName, "comments_count", strconv.Itoa(0)),
+					resource.TestCheckResourceAttr(resourceName, "positive_reactions_count", strconv.Itoa(0)),
+					resource.TestCheckResourceAttr(resourceName, "public_reactions_count", strconv.Itoa(0)),
+					resource.TestCheckResourceAttr(resourceName, "page_views_count", strconv.Itoa(0)),
+					resource.TestCheckResourceAttrSet(resourceName, "reading_time_minutes"),
 				),
 			},
 			{
@@ -104,6 +124,16 @@ func TestAccArticle_full(t *testing.T) {
 					resource.TestCheckResourceAttrSet(resourceName, "slug"),
 					resource.TestCheckResourceAttrSet(resourceName, "path"),
 					resource.TestCheckResourceAttr(resourceName, "series", series),
+					resource.TestCheckResourceAttrSet(resourceName, "created_at"),
+					resource.TestCheckResourceAttrSet(resourceName, "updated_at"),
+					resource.TestCheckResourceAttrSet(resourceName, "user.username"),
+					resource.TestCheckResourceAttrSet(resourceName, "published_at"),
+					resource.TestCheckResourceAttrSet(resourceName, "published_timestamp"),
+					resource.TestCheckResourceAttr(resourceName, "comments_count", strconv.Itoa(0)),
+					resource.TestCheckResourceAttr(resourceName, "positive_reactions_count", strconv.Itoa(0)),
+					resource.TestCheckResourceAttr(resourceName, "public_reactions_count", strconv.Itoa(0)),
+					resource.TestCheckResourceAttr(resourceName, "page_views_count", strconv.Itoa(0)),
+					resource.TestCheckResourceAttrSet(resourceName, "reading_time_minutes"),
 				),
 			},
 		},
