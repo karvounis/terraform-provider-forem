@@ -204,8 +204,11 @@ func resourceArticleCreate(ctx context.Context, d *schema.ResourceData, meta int
 func resourceArticleUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(*dev.Client)
 
-	tflog.Debug(ctx, fmt.Sprintf("Updating article with ID: %s", d.Id()))
 	abc := article.GetArticleBodySchemaFromResourceData(d)
+	if !d.HasChange("canonical_url") {
+		abc.Article.CanonicalURL = ""
+	}
+	tflog.Debug(ctx, fmt.Sprintf("Updating article with ID: %s", d.Id()))
 	if _, err := client.UpdateArticle(d.Id(), abc, nil); err != nil {
 		return diag.FromErr(err)
 	}
@@ -234,7 +237,8 @@ func resourceArticleRead(ctx context.Context, d *schema.ResourceData, meta inter
 			return diag.FromErr(err)
 		}
 		if len(articleResp) == 0 {
-			return diag.Errorf("no more articles")
+			tflog.Debug(ctx, "No more articles!")
+			return resourceArticleCreate(ctx, d, meta)
 		}
 
 		for _, v := range articleResp {
