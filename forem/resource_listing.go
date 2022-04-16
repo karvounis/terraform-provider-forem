@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"regexp"
 	"strconv"
-	"terraform-provider-forem/internal/listing"
 	"time"
 
 	"github.com/hashicorp/terraform-plugin-log/tflog"
@@ -151,7 +150,7 @@ func resourceListingDelete(ctx context.Context, d *schema.ResourceData, meta int
 func resourceListingCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(*dev.Client)
 
-	lbc := listing.GetListingBodySchemaFromResourceData(d)
+	lbc := getListingBodySchemaFromResourceData(d)
 	tflog.Debug(ctx, fmt.Sprintf("Creating listing with title: `%s` and category: `%s`", lbc.Listing.Title, lbc.Listing.Category))
 	resp, err := client.CreateListing(lbc, nil)
 	if err != nil {
@@ -169,7 +168,7 @@ func resourceListingUpdate(ctx context.Context, d *schema.ResourceData, meta int
 	client := meta.(*dev.Client)
 
 	tflog.Debug(ctx, fmt.Sprintf("Updating listing with ID: %s", d.Id()))
-	lbc := listing.GetListingBodySchemaFromResourceData(d)
+	lbc := getListingBodySchemaFromResourceData(d)
 	if _, err := client.UpdateListing(d.Id(), lbc, nil); err != nil {
 		return diag.FromErr(err)
 	}
@@ -225,4 +224,31 @@ func resourceListingRead(ctx context.Context, d *schema.ResourceData, meta inter
 	}
 
 	return nil
+}
+
+func getListingBodySchemaFromResourceData(d *schema.ResourceData) dev.ListingBodySchema {
+	var lbc dev.ListingBodySchema
+	lbc.Listing.Title = d.Get("title").(string)
+	lbc.Listing.BodyMarkdown = d.Get("body_markdown").(string)
+	lbc.Listing.Category = dev.ListingCategory(d.Get("category").(string))
+	if v, ok := d.GetOk("expires_at"); ok {
+		lbc.Listing.ExpiresAt = v.(string)
+	}
+	if v, ok := d.GetOk("contact_via_connect"); ok {
+		lbc.Listing.ContactViaConnect = v.(bool)
+	}
+	if v, ok := d.GetOk("location"); ok {
+		lbc.Listing.Location = v.(string)
+	}
+	if v, ok := d.GetOk("action"); ok {
+		lbc.Listing.Action = dev.Action(v.(string))
+	}
+	if v, ok := d.GetOk("tags"); ok {
+		tags := []string{}
+		for _, t := range v.([]interface{}) {
+			tags = append(tags, t.(string))
+		}
+		lbc.Listing.Tags = tags
+	}
+	return lbc
 }

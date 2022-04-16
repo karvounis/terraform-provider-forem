@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"strconv"
-	"terraform-provider-forem/internal/article"
 	"time"
 
 	"github.com/hashicorp/terraform-plugin-log/tflog"
@@ -186,7 +185,7 @@ func resourceArticleDelete(ctx context.Context, d *schema.ResourceData, meta int
 func resourceArticleCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(*dev.Client)
 
-	abc := article.GetArticleBodySchemaFromResourceData(d)
+	abc := getArticleBodySchemaFromResourceData(d)
 	tflog.Debug(ctx, fmt.Sprintf("Creating article with title: `%s`", abc.Article.Title))
 
 	resp, err := client.CreateArticle(abc, nil)
@@ -204,7 +203,7 @@ func resourceArticleCreate(ctx context.Context, d *schema.ResourceData, meta int
 func resourceArticleUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(*dev.Client)
 
-	abc := article.GetArticleBodySchemaFromResourceData(d)
+	abc := getArticleBodySchemaFromResourceData(d)
 	if !d.HasChange("canonical_url") {
 		abc.Article.CanonicalURL = ""
 	}
@@ -310,4 +309,37 @@ func resourceArticleRead(ctx context.Context, d *schema.ResourceData, meta inter
 	}
 
 	return nil
+}
+
+func getArticleBodySchemaFromResourceData(d *schema.ResourceData) dev.ArticleBodySchema {
+	var abc dev.ArticleBodySchema
+	abc.Article.Title = d.Get("title").(string)
+	abc.Article.BodyMarkdown = d.Get("body_markdown").(string)
+
+	if v, ok := d.GetOk("published"); ok {
+		abc.Article.Published = v.(bool)
+	}
+	if v, ok := d.GetOk("series"); ok {
+		abc.Article.Series = v.(string)
+	}
+	if v, ok := d.GetOk("cover_image"); ok {
+		abc.Article.MainImage = v.(string)
+	}
+	if v, ok := d.GetOk("canonical_url"); ok {
+		abc.Article.CanonicalURL = v.(string)
+	}
+	if v, ok := d.GetOk("description"); ok {
+		abc.Article.Description = v.(string)
+	}
+	if v, ok := d.GetOk("tags"); ok {
+		tags := []string{}
+		for _, t := range v.([]interface{}) {
+			tags = append(tags, t.(string))
+		}
+		abc.Article.Tags = tags
+	}
+	if v, ok := d.GetOk("organization_id"); ok {
+		abc.Article.OrganizationID = v.(int32)
+	}
+	return abc
 }
